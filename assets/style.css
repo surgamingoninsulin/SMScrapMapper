@@ -157,6 +157,8 @@ a {
     border-radius: 5px;
     padding: 10px;
     max-height: 60%;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 .scroll-y {
     overflow-y: scroll;
@@ -164,21 +166,27 @@ a {
 #stats-content {
     font-size: 0.8em;
     padding-top: 10px;
+    color: #333;
 }
 .collapsed {
     display: none;
 }
 .stat-title {
     padding-top: 10px;
+    color: #333;
+    font-weight: bold;
 }
 .toggle {
     float: right;
     font-size: 0.9em;
     max-width: 80hw;
+    color: #00BAF2;
+    font-weight: 500;
 }
 #stats-content td {
     font-size: 0.8em;
     font-family: 'Roboto', sans-serif;
+    color: #333;
 }
 .poilabel {
     font-size: 0.75em;
@@ -187,10 +195,25 @@ a {
 .tile-highlight-cb {
     cursor: pointer;
     margin-right: 5px;
+    width: 16px;
+    height: 16px;
+    accent-color: #60A5FA;
 }
 
 .pin-marker-cb {
     cursor: pointer;
+    margin-right: 5px;
+    width: 16px;
+    height: 16px;
+    accent-color: #60A5FA;
+}
+
+/* Ensure checkboxes are visible */
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #60A5FA;
     margin-right: 5px;
 }
 

@@ -18,6 +18,33 @@ SMOverviewMap = (function() {
     var minZoom = 0
     var maxZoom = 5
     var gridSize = 64
+    
+    // Detect base path for GitHub Pages compatibility
+    function getBasePath() {
+        // Get the base path from the current script location
+        var scripts = document.getElementsByTagName('script');
+        for(var i = scripts.length - 1; i >= 0; i--) {
+            if(scripts[i].src && scripts[i].src.indexOf('sm_overview_map.js') !== -1) {
+                var scriptPath = scripts[i].src;
+                // Extract base path (everything before assets/js/sm_overview_map.js)
+                var basePath = scriptPath.substring(0, scriptPath.indexOf('assets/js/'));
+                return basePath;
+            }
+        }
+        
+        // Fallback: try to detect from window location
+        var path = window.location.pathname;
+        // Remove index.html or trailing slash
+        if(path.endsWith('index.html')) {
+            path = path.substring(0, path.length - 10);
+        }
+        if(!path.endsWith('/')) {
+            path = path + '/';
+        }
+        return path;
+    }
+    
+    var basePath = getBasePath();
 
     // A quick extension to allow image layer rotation.
     L.RotateImageLayer = L.ImageOverlay.extend({
@@ -51,7 +78,7 @@ SMOverviewMap = (function() {
     });
 
     var markerIcon = L.icon({
-        iconUrl: './assets/img/markers/marker.png',
+        iconUrl: basePath + 'assets/img/markers/marker.png',
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
         // iconSize: [38,84],
         iconSize: [20,44],
@@ -61,7 +88,7 @@ SMOverviewMap = (function() {
 
     // Pinned marker icon - uses markers folder, falls back to main marker
     var pinnedMarkerIcon = L.icon({
-        iconUrl: './assets/img/markers/marker.png',
+        iconUrl: basePath + 'assets/img/markers/marker.png',
         shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
         iconSize: [20,44],
         iconAnchor: [9,44],
@@ -104,67 +131,71 @@ SMOverviewMap = (function() {
     // Discover available marker icons by scanning markers folder
     function discoverMarkerIcons() {
         var icons = [];
-        var basePath = './assets/img/';
-        var markersPath = basePath + 'markers/';
+        var imgMarkersPath = basePath + 'assets/img/markers/'; // Primary location: ./assets/img/markers/
+        var markersPath = basePath + 'assets/assets/img/markers/'; // Fallback: assets/assets/img/markers/
+        var imgBasePath = basePath + 'assets/img/';
         var patterns = [];
         
-        // Always include default markers from markers folder
-        patterns.push({ path: markersPath, file: 'marker.png' });
-        patterns.push({ path: basePath, file: 'marker.png' }); // Fallback to main folder
-        patterns.push({ path: basePath, file: 'map_markers_pinned.png' });
+        // Always include marker.png from both locations (assets/img/markers/ takes priority)
+        patterns.push({ path: imgMarkersPath, file: 'marker.png' }); // Primary location
+        patterns.push({ path: markersPath, file: 'marker.png' }); // Fallback
+        patterns.push({ path: imgBasePath, file: 'marker.png' }); // Fallback to assets/img/
         
-        // Scan markers folder with comprehensive patterns
-        // Try map_markers_*.png patterns (0-999)
-        for(var i = 0; i <= 999; i++) {
-            patterns.push({ path: markersPath, file: 'map_markers_' + i + '.png' });
-            patterns.push({ path: markersPath, file: 'map_marker_' + i + '.png' });
-            patterns.push({ path: markersPath, file: 'marker_' + i + '.png' });
+        // Check for markerX.png pattern (marker1.png, marker2.png, etc.) - user has 1-8
+        for(var i = 1; i <= 20; i++) {
+            // Check assets/img/markers/ (user's actual location)
+            patterns.push({ path: imgMarkersPath, file: 'marker' + i + '.png' });
+            // Also check assets/assets/img/markers/ as fallback
             patterns.push({ path: markersPath, file: 'marker' + i + '.png' });
-            patterns.push({ path: markersPath, file: 'pin_' + i + '.png' });
-            patterns.push({ path: markersPath, file: 'pin' + i + '.png' });
         }
         
-        // Also check main img folder for marker patterns
-        for(var i = 1; i <= 100; i++) {
-            patterns.push({ path: basePath, file: 'map_markers_' + i + '.png' });
-            patterns.push({ path: basePath, file: 'map_marker_' + i + '.png' });
-            patterns.push({ path: basePath, file: 'marker_' + i + '.png' });
-        }
-        
-        // Try alphabetical patterns in markers folder (marker_a.png, marker_b.png, etc.)
-        var letters = 'abcdefghijklmnopqrstuvwxyz';
-        for(var i = 0; i < letters.length; i++) {
-            patterns.push({ path: markersPath, file: 'marker_' + letters[i] + '.png' });
-            patterns.push({ path: markersPath, file: 'marker' + letters[i] + '.png' });
-        }
-        
-        // Test each pattern by trying to load the image
+        // Test each pattern by trying to load the image (with batching to avoid blocking)
         var tested = 0;
         var maxTests = patterns.length;
         var foundIcons = new Set(); // Use Set to avoid duplicates
+        var batchSize = 50; // Process in batches to avoid blocking
+        var currentBatch = 0;
         
         function checkComplete() {
             if(tested === maxTests) {
                 icons = Array.from(foundIcons);
-                availableMarkerIcons = icons.length > 0 ? icons : [markersPath + 'marker.png'];
+                // Default to assets/img/markers/ if available, otherwise assets/assets/img/markers/
+                var defaultMarkerPath = basePath + 'assets/img/markers/marker.png';
+                availableMarkerIcons = icons.length > 0 ? icons : [defaultMarkerPath];
                 console.log('Discovered ' + availableMarkerIcons.length + ' marker icons');
             }
         }
         
-        patterns.forEach(function(pattern) {
-            var fullPath = pattern.path + pattern.file;
-            var img = new Image();
-            img.onload = function() {
-                foundIcons.add(fullPath);
-                tested++;
-                checkComplete();
-            };
-            img.onerror = function() {
-                tested++;
-                checkComplete();
-            };
-            img.src = fullPath;
-        });
+        function processBatch(startIndex) {
+            var endIndex = Math.min(startIndex + batchSize, patterns.length);
+            for(var i = startIndex; i < endIndex; i++) {
+                var pattern = patterns[i];
+                var fullPath = pattern.path + pattern.file;
+                var img = new Image();
+                img.onload = function(path) {
+                    return function() {
+                        foundIcons.add(path);
+                        tested++;
+                        checkComplete();
+                    };
+                }(fullPath);
+                img.onerror = function() {
+                    tested++;
+                    checkComplete();
+                };
+                img.src = fullPath;
+            }
+            
+            // Process next batch asynchronously
+            if(endIndex < patterns.length) {
+                setTimeout(function() {
+                    processBatch(endIndex);
+                }, 10);
+            }
+        }
+        
+        // Start processing in batches
+        processBatch(0);
         
         return icons;
     }
@@ -196,7 +227,7 @@ SMOverviewMap = (function() {
                 lng: marker.getLatLng().lng,
                 x: marker.options.x,
                 y: marker.options.y,
-                iconPath: marker.options.iconPath || './assets/img/markers/marker.png'
+                iconPath: marker.options.iconPath || basePath + 'assets/img/markers/marker.png'
             };
         });
         try {
@@ -212,7 +243,7 @@ SMOverviewMap = (function() {
             if(saved) {
                 var markersData = JSON.parse(saved);
                 markersData.forEach(function(data) {
-                    var iconPath = data.iconPath || './assets/img/markers/marker.png';
+                    var iconPath = data.iconPath || basePath + 'assets/img/markers/marker.png';
                     createPinnedMarker(data.lat, data.lng, data.x, data.y, false, iconPath);
                 });
             }
@@ -223,7 +254,8 @@ SMOverviewMap = (function() {
 
     function createPinnedMarker(lat, lng, x, y, save, iconPath) {
         // Default to markers folder if available, otherwise fallback
-        iconPath = iconPath || './assets/img/markers/marker.png';
+        // Default to assets/img/markers/ if available, otherwise assets/assets/img/markers/
+        iconPath = iconPath || basePath + 'assets/img/markers/marker.png';
         var icon = createMarkerIcon(iconPath);
         
         var marker = L.marker([lat, lng], {
@@ -240,7 +272,7 @@ SMOverviewMap = (function() {
                 iconElement.classList.add('pinned-marker');
                 // If image fails to load, apply fallback styling
                 iconElement.onerror = function() {
-                    this.src = './assets/img/markers/marker.png';
+                    this.src = basePath + 'assets/img/markers/marker.png';
                     this.classList.add('pinned-marker-fallback');
                 };
             }
@@ -647,7 +679,7 @@ SMOverviewMap = (function() {
         if(inputjson) {
             loadCells(JSON.parse(inputjson));
         } else {
-        loadFile("./assets/json/cells.json",loadCells);
+        loadFile(basePath + "assets/json/cells.json",loadCells);
         }
         
         // Discover marker icons and load pinned markers after cells are loaded
@@ -706,7 +738,7 @@ SMOverviewMap = (function() {
                                     var markerY = y;
                                     clickmarker.remove();
                                     clickmarker = null;
-                                    createPinnedMarker(markerLat, markerLng, markerX, markerY, true, './assets/img/markers/marker.png');
+                                        createPinnedMarker(markerLat, markerLng, markerX, markerY, true, basePath + 'assets/img/markers/marker.png');
                                 }
                             });
                         }
@@ -779,11 +811,39 @@ SMOverviewMap = (function() {
         iconGrid.className = 'icon-selector-grid';
         
         // Add discovered icons (always include default markers)
-        var iconsToShow = availableMarkerIcons.length > 0 ? availableMarkerIcons : ['./assets/img/markers/marker.png'];
+        var defaultMarker = basePath + 'assets/img/markers/marker.png';
+        var iconsToShow = availableMarkerIcons.length > 0 ? availableMarkerIcons : [defaultMarker];
         // Ensure default marker from markers folder is included
-        if(iconsToShow.indexOf('./assets/img/markers/marker.png') === -1) {
-            iconsToShow.unshift('./assets/img/markers/marker.png');
+        if(iconsToShow.indexOf(defaultMarker) === -1) {
+            iconsToShow.push(defaultMarker);
         }
+        
+        // Sort icons alphabetically: marker.png first, then marker1.png, marker2.png, etc.
+        iconsToShow.sort(function(a, b) {
+            // Extract filename from path
+            var aFile = a.split('/').pop();
+            var bFile = b.split('/').pop();
+            
+            // marker.png always comes first
+            if(aFile === 'marker.png') return -1;
+            if(bFile === 'marker.png') return 1;
+            
+            // Extract numbers from markerX.png pattern
+            var aMatch = aFile.match(/^marker(\d+)\.png$/);
+            var bMatch = bFile.match(/^marker(\d+)\.png$/);
+            
+            // If both are numbered markers, sort by number
+            if(aMatch && bMatch) {
+                return parseInt(aMatch[1]) - parseInt(bMatch[1]);
+            }
+            
+            // If only one is numbered, numbered comes after marker.png but before others
+            if(aMatch) return -1;
+            if(bMatch) return 1;
+            
+            // Otherwise, sort alphabetically
+            return aFile.localeCompare(bFile);
+        });
         
         iconsToShow.forEach(function(iconPath) {
             var iconItem = document.createElement('div');
@@ -864,93 +924,93 @@ SMOverviewMap = (function() {
     function getPoiUrl(poiType,tileid,x,y) {
         switch(poiType) {
             case 'POI_MECHANICSTATION_MEDIUM':
-                return './assets/img/mechanic_station.png'
+                return basePath + 'assets/img/mechanic_station.png'
             break;
             case 'POI_HIDEOUT_XL':
-                return './assets/img/hideout.png'
+                return basePath + 'assets/img/hideout.png'
             break;
             case 'POI_CAMP_LARGE':
-                return './assets/img/camp_large.jpg'
+                return basePath + 'assets/img/camp_large.jpg'
             break;
             case 'POI_WAREHOUSE4_LARGE':
-                return './assets/img/warehouse4.png'
+                return basePath + 'assets/img/warehouse4.png'
             break;
             case 'POI_WAREHOUSE3_LARGE':
-                return './assets/img/warehouse3_large.png'
+                return basePath + 'assets/img/warehouse3_large.png'
             break;
             case 'POI_WAREHOUSE2_LARGE':
-                return './assets/img/warehouse2.jpg'
+                return basePath + 'assets/img/warehouse2.jpg'
             break;
             case 'POI_SILODISTRICT_XL':
-                return './assets/img/silodistrict.jpg'
+                return basePath + 'assets/img/silodistrict.jpg'
             break;
             case 'POI_RUINCITY_XL':
-                return './assets/img/scrapcity.jpg'
+                return basePath + 'assets/img/scrapcity.jpg'
             break;
             case 'POI_PACKINGSTATIONVEG_MEDIUM':
-                return './assets/img/packing_veg.jpg'
+                return basePath + 'assets/img/packing_veg.jpg'
             break;
             case 'POI_PACKINGSTATIONFRUIT_MEDIUM':
-                return './assets/img/packing_fruit.jpg'
+                return basePath + 'assets/img/packing_fruit.jpg'
             break;
             case 'POI_CHEMLAKE_MEDIUM':
                 if(tileid == 12103) {
-                    return './assets/img/chemlake_medium_3.jpg'
+                    return basePath + 'assets/img/chemlake_medium_3.jpg'
                 } else if(tileid == 12102) {
-                    return './assets/img/chemlake_medium_2.jpg'
+                    return basePath + 'assets/img/chemlake_medium_2.jpg'
                 }
-                return './assets/img/chemlake_medium_1.jpg'
+                return basePath + 'assets/img/chemlake_medium_1.jpg'
             break;
             case 'POI_RUIN_MEDIUM':
                 if(tileid == 12003) {
-                    return './assets/img/ruin_medium_3.jpg'
+                    return basePath + 'assets/img/ruin_medium_3.jpg'
                 }
-                return './assets/img/ruin_medium_4.jpg'
+                return basePath + 'assets/img/ruin_medium_4.jpg'
             break;
             case 'POI_FOREST_RUIN_MEDIUM':
                 if(tileid == 20402) {
-                    return './assets/img/forest_ruin_medium_2.jpg'
+                    return basePath + 'assets/img/forest_ruin_medium_2.jpg'
                 }
-                return './assets/img/forest_ruin_medium_1.jpg'
+                return basePath + 'assets/img/forest_ruin_medium_1.jpg'
             break;
             case 'POI_LAKE_UNDERWATER_MEDIUM':
                 if(tileid == 80203) {
-                    return './assets/img/underwater_med_3.jpg'
+                    return basePath + 'assets/img/underwater_med_3.jpg'
                 } else 
                 if(tileid == 80204 || tileid == 80202 || tileid == 80212) {
-                    return './assets/img/underwater_med_4.jpg'
+                    return basePath + 'assets/img/underwater_med_4.jpg'
                 }
             break;
             case 'POI_CRASHSITE_AREA':
                 if(tileid == 10103) {
-                    return './assets/img/start_crashsite3.jpg'
+                    return basePath + 'assets/img/start_crashsite3.jpg'
                 } else if(tileid == 10102) {
-                    return './assets/img/start_crashsite2.jpg'
+                    return basePath + 'assets/img/start_crashsite2.jpg'
                 } else if (tileid == 10101 && x == -38 && y == -42) {
-                    return './assets/img/start_crashsite1.jpg'
+                    return basePath + 'assets/img/start_crashsite1.jpg'
                 }
             break;
             case 'POI_CAPSULESCRAPYARD_MEDIUM':
-                    return './assets/img/capsule_scrapyard.jpg'
+                    return basePath + 'assets/img/capsule_scrapyard.jpg'
             break;
             case 'POI_BURNTFOREST_FARMBOTSCRAPYARD_LARGE':
-                    return './assets/img/burntforest_farmbot_scrapyard.jpg'
+                    return basePath + 'assets/img/burntforest_farmbot_scrapyard.jpg'
             break;
             case 'POI_CRASHEDSHIP_LARGE':
-                    return './assets/img/crashed_ship.jpg'
+                    return basePath + 'assets/img/crashed_ship.jpg'
             break;
             case 'POI_LABYRINTH_MEDIUM':
-                    return './assets/img/labyrinth.jpg'
+                    return basePath + 'assets/img/labyrinth.jpg'
             break;
             case 'POI_BUILDAREA_MEDIUM':
-                    return './assets/img/buildarea.jpg'
+                    return basePath + 'assets/img/buildarea.jpg'
             break;
             case 'POI_LAKE_RANDOM':
                 if(tileid == 80102) {
-                    return './assets/img/lake_generic.jpg'
+                    return basePath + 'assets/img/lake_generic.jpg'
                 }
             
-                return './assets/img/lake_generic.jpg'
+                return basePath + 'assets/img/lake_generic.jpg'
             break;
         }
     }
@@ -1005,21 +1065,21 @@ SMOverviewMap = (function() {
             8000701,8000702,8000703,8000704,8000705,8000706
         ];
         if(tiles.includes(tileid)) {
-            return `./assets/img/tiles/${tileid}.jpg`
+            return basePath + `assets/img/tiles/${tileid}.jpg`
         }
         if(tileid > 8000000) {
-            return './assets/img/lake_generic.jpg'
+            return basePath + 'assets/img/lake_generic.jpg'
         }
         if(x == -37 && y == -39) {
-            return './assets/img/start_crashsite_-37_-39.jpg';
+            return basePath + 'assets/img/start_crashsite_-37_-39.jpg';
         } else if(x == -37 && y == -39) {
-            return './assets/img/start_crashsite_-37_-39.jpg';
+            return basePath + 'assets/img/start_crashsite_-37_-39.jpg';
         } else if(x == -37 && y == -40) {
-            return './assets/img/start_crashsite_-37_-40.jpg';
+            return basePath + 'assets/img/start_crashsite_-37_-40.jpg';
         } else if(x == -36 && y == -40) {
-            return './assets/img/start_crashsite_-36_-40.jpg';
+            return basePath + 'assets/img/start_crashsite_-36_-40.jpg';
         } else if(x == -36 && y == -41) {
-            return './assets/img/start_crashsite_-36_-41.jpg';
+            return basePath + 'assets/img/start_crashsite_-36_-41.jpg';
         }
     }
 
