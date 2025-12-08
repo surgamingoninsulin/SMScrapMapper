@@ -1,0 +1,290 @@
+html, body {
+    background-color: #EEAF5C;
+    width:100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin:0;
+    padding:0;
+    font-family: 'Roboto', sans-serif;
+}
+#map {
+    background-color: #EEAF5C;
+    flex: 1;
+    border: 2px solid #60A5FA;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+}
+a {
+    color: #00BAF2;
+    text-decoration: none;
+}
+.cell {
+    font-size: 0.4em;
+    word-break: break-all;
+}
+.innercell {
+    padding: 0.4em;
+}
+.meadow {
+    background-color: #00E85D;
+}
+.lake {
+    background-color: #00BAF2;
+}
+.autumnforest {
+    background-color: #F2BB07;
+}
+.autumnforest {
+    background-color: #F2BB07;
+}
+.forest {
+    background-color: #00BC1B;
+}
+.burntforest {
+    background-color: #9E8A5C;
+}
+.mountain {
+    background-color: #8DBFAC;
+}
+.desert {
+    background-color: #FFDE93;
+}
+.field {
+    background-color: #A4E07E;
+}
+.gridLayer {
+    z-index: 10 !important;
+}
+.none {
+    background-color: #00FF8F;
+}
+.road-N {
+    position: absolute;
+    top: 0;
+    left: 45%;
+    height: 50%;
+    width: 2em;
+    background-color: #999;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+.road-S {
+    position: absolute;
+    bottom: 0;
+    left: 45%;
+    height: 50%;
+    width: 2em;
+    background-color: #999;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+.road-E {
+    position: absolute;
+    right: 0;
+    bottom: 45%;
+    width: 50%;
+    height: 2em;
+    background-color: #999;
+    text-align: center;
+}
+.road-W {
+    position: absolute;
+    left: 0;
+    bottom: 45%;
+    width: 50%;
+    height: 2em;
+    background-color: #999;
+    text-align: center;
+}
+.roadLine {
+    position: absolute;
+}
+.road-W .roadLine, .road-E .roadLine {
+    top: 49%;
+    width: 100%;
+    height: 1px;
+    border-top: 0.5px dashed yellow;
+}
+.road-N .roadLine, .road-S .roadLine {
+    left: 49%;
+    height: 100%;
+    width: 1px;
+    border-left: 0.5px dashed yellow;
+}
+
+.rotLabel {
+    position: absolute;
+    bottom: 0;
+}
+.rot-1 {
+    transform: rotate(270deg);
+}
+.rot-2 {
+    transform: rotate(180deg);
+}
+.rot-3 {
+    transform: rotate(90deg);
+}
+
+.tileid {
+    position: absolute;
+    bottom: 0;
+    right: 3;
+}
+.tileimg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    /* opacity: 0.85; */
+}
+
+#stats {
+    position: fixed;
+    right: 10;
+    top: 30;
+    z-index: 1000;
+    background: #FCFCFC;
+    border-radius: 5px;
+    padding: 10px;
+    max-height: 60%;
+}
+.scroll-y {
+    overflow-y: scroll;
+}
+#stats-content {
+    font-size: 0.8em;
+    padding-top: 10px;
+}
+.collapsed {
+    display: none;
+}
+.stat-title {
+    padding-top: 10px;
+}
+.toggle {
+    float: right;
+    font-size: 0.9em;
+    max-width: 80hw;
+}
+#stats-content td {
+    font-size: 0.8em;
+    font-family: 'Roboto', sans-serif;
+}
+.poilabel {
+    font-size: 0.75em;
+}
+
+.tile-highlight-cb {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.pin-marker-cb {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+/* Ensure highlight layer appears above grid but below markers */
+.leaflet-interactive {
+    z-index: 200 !important;
+}
+
+/* Pinned marker styling - different color (blue tint) */
+.pinned-marker {
+    filter: hue-rotate(200deg) saturate(1.5) brightness(1.1);
+}
+
+.pinned-marker-icon img {
+    filter: hue-rotate(200deg) saturate(1.5) brightness(1.1);
+}
+
+.pinned-marker-fallback {
+    filter: hue-rotate(200deg) saturate(1.5) brightness(1.1);
+}
+
+.change-icon-btn {
+    background-color: #60A5FA;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+
+.change-icon-btn:hover {
+    background-color: #3B82F6;
+}
+
+.icon-selector-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-selector-modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.icon-selector-modal h3 {
+    margin-top: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.icon-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin: 15px 0;
+}
+
+.icon-selector-item {
+    text-align: center;
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.icon-selector-item:hover {
+    border-color: #60A5FA;
+    background-color: #f0f0f0;
+}
+
+.icon-selector-item img {
+    width: 40px;
+    height: auto;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+.icon-selector-item-label {
+    font-size: 11px;
+    color: #666;
+    word-break: break-all;
+}
