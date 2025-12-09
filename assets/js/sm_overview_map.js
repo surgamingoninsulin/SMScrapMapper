@@ -2666,27 +2666,6 @@ SMOverviewMap = (function() {
             });
         }
         
-        // Setup add pin from map checkbox
-        var addPinFromMapCb = document.getElementById('add-pin-from-map-cb');
-        if(addPinFromMapCb) {
-            addPinFromMapCb.addEventListener('change', function(e) {
-                addPinFromMapMode = this.checked;
-                if(addPinFromMapMode) {
-                    var status = document.getElementById('route-status-modal');
-                    if(status) {
-                        status.textContent = 'Click on the map to add pins. Uncheck to disable.';
-                        status.className = 'route-status info';
-                        setTimeout(function() {
-                            if(status.textContent.indexOf('Click on the map') !== -1) {
-                                status.textContent = '';
-                                status.className = '';
-                            }
-                        }, 3000);
-                    }
-                }
-            });
-        }
-        
         // Map click handler for waypoints is now in the main map.on('click') handler above
     }
     
@@ -2711,10 +2690,6 @@ SMOverviewMap = (function() {
         routePlanningMode = false;
         // Disable add pin from map mode when closing
         addPinFromMapMode = false;
-        var addPinCb = document.getElementById('add-pin-from-map-cb');
-        if(addPinCb) {
-            addPinCb.checked = false;
-        }
         disableWaypointMode();
     }
     
@@ -3055,9 +3030,48 @@ SMOverviewMap = (function() {
             savedRoutes.push(routeData);
         }
         
+        // Check if localStorage is available
+        if (typeof(Storage) === "undefined" || !window.localStorage) {
+            var status = document.getElementById('route-status-modal');
+            if(status) {
+                status.textContent = 'Error: localStorage is not available in this browser.';
+                status.className = 'route-status error';
+            }
+            console.error('localStorage is not available');
+            return;
+        }
+        
         // Save to localStorage
         try {
-            localStorage.setItem('sm_routes', JSON.stringify(savedRoutes));
+            var dataToSave = JSON.stringify(savedRoutes);
+            var dataSize = new Blob([dataToSave]).size;
+            
+            // Check storage quota (approximate check)
+            try {
+                // Try to estimate if we have enough space
+                var testKey = '__sm_storage_test__';
+                localStorage.setItem(testKey, 'test');
+                localStorage.removeItem(testKey);
+            } catch(testError) {
+                if(testError.name === 'QuotaExceededError' || testError.code === 22) {
+                    var status = document.getElementById('route-status-modal');
+                    if(status) {
+                        status.textContent = 'Error: Browser storage is full. Please clear some space or delete old routes.';
+                        status.className = 'route-status error';
+                    }
+                    console.error('Storage quota exceeded');
+                    return;
+                }
+            }
+            
+            localStorage.setItem('sm_routes', dataToSave);
+            
+            // Verify the save worked
+            var verify = localStorage.getItem('sm_routes');
+            if(!verify || verify !== dataToSave) {
+                throw new Error('Save verification failed - data may not have been saved correctly');
+            }
+            
             var status = document.getElementById('route-status-modal');
             if(status) {
                 status.textContent = 'Route "' + routeName + '" saved successfully!';
@@ -3068,26 +3082,52 @@ SMOverviewMap = (function() {
             clearRouteWithWaypoints();
             document.getElementById('route-name-input').value = '';
         } catch(e) {
-            console.warn('Failed to save route:', e);
+            console.error('Failed to save route:', e);
             var status = document.getElementById('route-status-modal');
             if(status) {
-                status.textContent = 'Failed to save route: ' + e.message;
+                var errorMsg = 'Failed to save route. ';
+                if(e.name === 'QuotaExceededError' || e.code === 22) {
+                    errorMsg += 'Browser storage is full. Please delete old routes or clear browser data.';
+                } else if(e.name === 'SecurityError' || e.code === 18) {
+                    errorMsg += 'Storage is blocked by browser settings. Please enable localStorage.';
+                } else {
+                    errorMsg += e.message || 'Unknown error occurred.';
+                }
+                status.textContent = errorMsg;
                 status.className = 'route-status error';
             }
         }
     }
     
     function loadRoutes() {
+        // Check if localStorage is available
+        if (typeof(Storage) === "undefined" || !window.localStorage) {
+            console.warn('localStorage is not available');
+            savedRoutes = [];
+            return;
+        }
+        
         try {
             var saved = localStorage.getItem('sm_routes');
             if(saved) {
                 savedRoutes = JSON.parse(saved);
+                // Validate that savedRoutes is an array
+                if(!Array.isArray(savedRoutes)) {
+                    console.warn('Invalid routes data format, resetting to empty array');
+                    savedRoutes = [];
+                }
             } else {
                 savedRoutes = [];
             }
         } catch(e) {
-            console.warn('Failed to load routes:', e);
+            console.error('Failed to load routes:', e);
             savedRoutes = [];
+            // If there's corrupted data, try to clear it
+            try {
+                localStorage.removeItem('sm_routes');
+            } catch(clearError) {
+                console.error('Failed to clear corrupted routes data:', clearError);
+            }
         }
     }
     
@@ -3189,6 +3229,19 @@ SMOverviewMap = (function() {
         
         if(confirm('Are you sure you want to delete route "' + savedRoutes[index].name + '"?')) {
             savedRoutes.splice(index, 1);
+            
+            // Check if localStorage is available
+            if (typeof(Storage) === "undefined" || !window.localStorage) {
+                console.error('localStorage is not available');
+                var status = document.getElementById('route-status-modal');
+                if(status) {
+                    status.textContent = 'Error: localStorage is not available. Route removed from memory only.';
+                    status.className = 'route-status error';
+                }
+                updateSavedRoutesList();
+                return;
+            }
+            
             try {
                 localStorage.setItem('sm_routes', JSON.stringify(savedRoutes));
                 updateSavedRoutesList();
@@ -3198,7 +3251,20 @@ SMOverviewMap = (function() {
                     status.className = 'route-status success';
                 }
             } catch(e) {
-                console.warn('Failed to delete route:', e);
+                console.error('Failed to delete route:', e);
+                var status = document.getElementById('route-status-modal');
+                if(status) {
+                    var errorMsg = 'Failed to delete route. ';
+                    if(e.name === 'QuotaExceededError' || e.code === 22) {
+                        errorMsg += 'Storage quota exceeded.';
+                    } else if(e.name === 'SecurityError' || e.code === 18) {
+                        errorMsg += 'Storage is blocked by browser settings.';
+                    } else {
+                        errorMsg += e.message || 'Unknown error occurred.';
+                    }
+                    status.textContent = errorMsg;
+                    status.className = 'route-status error';
+                }
             }
         }
     }
