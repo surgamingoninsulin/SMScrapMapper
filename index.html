@@ -21,14 +21,74 @@
         
     </head>
     <body>
+            <div id="route-planner-btn" class="route-planner-button">
+                <span class="route-icon">🗺️</span>
+                <span class="route-text">Route Planner</span>
+            </div>
+            <div id="route-planner-overlay" class="route-planner-overlay collapsed">
+                <div class="route-planner-modal">
+                    <div class="route-planner-header">
+                        <h2>Route Planner</h2>
+                        <button id="close-route-planner" class="close-btn">×</button>
+                    </div>
+                    <div class="route-planner-content">
+                        <div class="route-planner-controls">
+                            <input type="text" id="route-name-input" placeholder="Enter route name..." class="route-name-input">
+                            <button id="add-waypoint-btn" class="action-btn primary">+ Add Waypoint</button>
+                            <button id="calculate-route-btn-modal" class="action-btn success">Calculate Route</button>
+                            <button id="save-route-btn" class="action-btn save">💾 Save Route</button>
+                            <button id="open-saved-route-btn" class="action-btn open-route">📂 Open Saved Route</button>
+                            <button id="clear-route-btn-modal" class="action-btn danger" style="display: none;">Clear</button>
+                            <label class="route-planner-checkbox">
+                                <input type="checkbox" id="add-pin-from-map-cb">
+                                <span>Add Pin on Map Click</span>
+                            </label>
+                        </div>
+                        <div id="saved-routes-list" class="saved-routes-list collapsed">
+                            <div class="saved-routes-header">
+                                <h4 style="margin: 0; color: white;">Saved Routes</h4>
+                                <button id="close-saved-routes-btn" class="close-btn-small">×</button>
+                            </div>
+                            <div id="saved-routes-content" class="saved-routes-content"></div>
+                        </div>
+                        <div id="waypoints-list" class="waypoints-list">
+                            <div class="waypoint-item-header">
+                                <span>Waypoint</span>
+                                <span>Location</span>
+                                <span>Actions</span>
+                            </div>
+                        </div>
+                        <div id="route-status-modal" class="route-status"></div>
+                    </div>
+                </div>
+            </div>
             <div id="map"> 
                 <!-- map will go here -->
             </div> 
-            <div id="stats"> 
-                <a href="#" id="stats-toggle" class="toggle">Map Statistics</a> 
-                <div id="stats-content" class="collapsed"> 
-                 <!-- stats will go here -->
-                </div> 
+            <div id="settings-btn-top" class="settings-cog-button">
+                <span class="settings-icon">⚙️</span>
+            </div>
+            <div id="settings-overlay" class="settings-overlay collapsed">
+                <div class="settings-modal">
+                    <div class="settings-header">
+                        <h2>⚙️ Map Controls</h2>
+                        <button id="close-settings" class="close-btn">×</button>
+                    </div>
+                    <div class="settings-content">
+                        <div class="settings-section">
+                            <h3 class="section-title">Settings</h3>
+                            <div id="settings-content"> 
+                             <!-- settings will go here -->
+                            </div>
+                        </div>
+                        <div class="settings-section">
+                            <h3 class="section-title">Map Statistics</h3>
+                            <div id="stats-content"> 
+                             <!-- stats will go here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         <script src="assets/js/sm_overview_map.js"></script>
         <script>SMOverviewMap.init();</script>
