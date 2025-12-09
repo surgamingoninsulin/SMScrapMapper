@@ -42,8 +42,10 @@ This plan documents the implementation status of features for the Scrap Mechanic
    - Button colors fixed (success, info, danger, primary)
    - Unified modal system for settings
    - Route planner overlay with backdrop blur
-   - Responsive design
+   - Responsive design with optimized modal widths (85% width, max 1000px)
    - Smooth animations and transitions
+   - Map fully visible on screen (overflow fixed)
+   - Settings modal matches route planner width
 
 ---
 
@@ -63,12 +65,12 @@ This plan documents the implementation status of features for the Scrap Mechanic
   - `findPathAvoidingWater()`: A* pathfinding avoiding water
   - `calculatePathBetweenPoints()`: Shortest path with water avoidance and road preference
 - Route visualization with customizable colors, width, opacity, and glow
-- Route saving to localStorage (key: `sm_routes`)
+- Route saving to localStorage (key: `sm_routes`) with enhanced error handling
 - Route loading from saved routes list
 - Route deletion with confirmation
 - Waypoint list display with delete buttons
 - Route name input field
-- "Add Pin on Map Click" checkbox for direct waypoint creation
+- Robust localStorage error handling for GitHub Pages compatibility
 
 **Storage Format**:
 ```javascript
@@ -90,10 +92,10 @@ This plan documents the implementation status of features for the Scrap Mechanic
 - `addWaypoint(x, y, lat, lng, name)`: Add waypoint to route
 - `removeWaypoint(index)`: Remove waypoint
 - `calculateRouteWithWaypoints()`: Calculate and draw route
-- `saveRouteToLocalStorage()`: Save route to localStorage
-- `loadRoutes()`: Load all saved routes
+- `saveRouteToLocalStorage()`: Save route to localStorage with error handling
+- `loadRoutes()`: Load all saved routes with error handling
 - `loadSavedRoute(index)`: Load specific route
-- `deleteSavedRoute(index)`: Delete route
+- `deleteSavedRoute(index)`: Delete route with error handling
 - `updateWaypointsList()`: Update waypoint list UI
 - `updateSavedRoutesList()`: Update saved routes list UI
 
@@ -198,7 +200,7 @@ This plan documents the implementation status of features for the Scrap Mechanic
 
 **Route Planner**:
 - Overlay: `#route-planner-overlay`
-- Modal: `.route-planner-modal`
+- Modal: `.route-planner-modal` (85% width, max 1000px, min 800px)
 - Waypoint list: `#waypoints-list`
 - Saved routes list: `#saved-routes-list`
 - Controls: Route name input, Add Waypoint button, Calculate Route button, Save Route button, Open Saved Route button
@@ -206,7 +208,7 @@ This plan documents the implementation status of features for the Scrap Mechanic
 **Settings**:
 - Cog button: `#settings-btn-top`
 - Overlay: `#settings-overlay`
-- Modal: `.settings-modal`
+- Modal: `.settings-modal` (85% width, max 1000px, min 800px - matches route planner)
 - Content sections: Settings, Map Statistics
 
 **Markers**:
@@ -260,9 +262,10 @@ This plan documents the implementation status of features for the Scrap Mechanic
 
 ### Styling
 - **Buttons**: Gradient backgrounds, hover effects, smooth transitions
-- **Modals**: Backdrop blur, rounded corners, shadows
+- **Modals**: Backdrop blur, rounded corners, shadows, optimized width (85% width, max 1000px)
 - **Waypoint Markers**: Blue circles (20px) with white border (3px)
 - **Route Lines**: Customizable color, width, opacity, glow effect
+- **Map Container**: Full viewport visibility with overflow handling
 
 ---
 
@@ -281,7 +284,8 @@ This plan documents the implementation status of features for the Scrap Mechanic
 - [x] Routes can be deleted
 - [x] Waypoint list updates correctly
 - [x] Saved routes list displays correctly
-- [x] "Add Pin on Map Click" checkbox works
+- [x] Route saving works on GitHub Pages with error handling
+- [x] localStorage error handling for quota and security errors
 
 ### Settings ✅
 - [x] Settings modal opens/closes via cog icon
@@ -338,6 +342,10 @@ This plan documents the implementation status of features for the Scrap Mechanic
 - ✅ Routes are saved to localStorage (JSON format)
 - ✅ Route storage key: `sm_routes` in localStorage
 - ✅ Routes persist across browser sessions
+- ✅ Enhanced localStorage error handling for GitHub Pages compatibility
+- ✅ Map fully visible on screen (overflow fixed)
+- ✅ Modal widths optimized (85% width, max 1000px) for better UX
+- ✅ Settings modal matches route planner width
 - ✅ Old marker system completely removed
 - ✅ All markers use consistent waypoint pin design
 - ✅ Settings system is fully functional
@@ -345,13 +353,22 @@ This plan documents the implementation status of features for the Scrap Mechanic
 - ⚠️ Snap to roads/grid options exist in settings but not fully implemented
 - ⚠️ Grid/cell border visualization settings exist but not visually implemented
 - Consider performance for routes with many waypoints
-- LocalStorage has size limits - consider compression for large routes
+- LocalStorage has size limits - error handling now includes quota exceeded detection
 
 ---
 
 ## Version History
 
 ### Latest Update
+- **Fixed**: Route saving on GitHub Pages with enhanced localStorage error handling
+- **Fixed**: Map visibility - map now fully visible on screen (overflow fixed)
+- **Removed**: "Add Pin on Map Click" checkbox (no longer needed)
+- **Updated**: Modal widths optimized (85% width, max 1000px, min 800px)
+- **Updated**: Settings modal matches route planner width
+- **Improved**: localStorage error handling with quota exceeded and security error detection
+- **Improved**: Save verification to ensure routes are properly saved
+
+### Previous Update
 - **Removed**: Old marker.png system completely
 - **Added**: All markers use route planner waypoint pins
 - **Added**: "Add to Route Planner" button on map markers

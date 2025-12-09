@@ -32,9 +32,7 @@ An interactive map viewer and route planner for Scrap Mechanic, featuring a Goog
 ## Quick Start
 
 1. **Open Route Planner**: Click the 🗺️ Route Planner button at the top center
-2. **Add Waypoints**: 
-   - Click "Add Waypoint" then click on the map, OR
-   - Check "Add Pin on Map Click" to add waypoints directly by clicking the map
+2. **Add Waypoints**: Click "Add Waypoint" then click on the map to add waypoints
 3. **Calculate Route**: Click "Calculate Route" to see the path
 4. **Save Route**: Enter a route name and click "Save Route"
 5. **Load Route**: Click "Open Saved Route" to view and load saved routes
@@ -57,11 +55,13 @@ Access settings via the ⚙️ cog icon in the top-right corner:
 
 ## Technical Details
 
-- **Storage**: Routes and settings saved in browser localStorage
+- **Storage**: Routes and settings saved in browser localStorage with robust error handling
 - **Format**: JSON (routes and settings)
 - **Pathfinding**: A* algorithm with water avoidance and road preference
 - **Framework**: Leaflet.js for map rendering
 - **Styling**: Modern CSS with gradients, animations, and backdrop blur
+- **Responsive Design**: Optimized modal widths (85% width, max 1000px) for better UX
+- **GitHub Pages Compatible**: Enhanced localStorage error handling for reliable saving on GitHub Pages
 
 ## Browser Compatibility
 
