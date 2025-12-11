@@ -1,5 +1,5 @@
 <div align="center">
-<h1><a href="https://surgamingoninsulin.github.io/SMScrapMapper/">WEBSITE</a></h1>
+<h1><a href="https://surgamingoninsulin.github.io/preview_SMScrapMapper/">DEMO</a></h1>
 </div>
 <br>
 # Scrap Mechanic Map
@@ -52,27 +52,6 @@ pip install -r requirements.txt
 python Main.py
 ```
 
-## Building the EXE
-
-To build a standalone executable:
-
-1. Ensure you have PyInstaller installed:
-   ```bash
-   pip install pyinstaller
-   ```
-
-2. Run the build script:
-   ```bash
-   build_one_line.bat
-   ```
-
-   Or for debugging (with console output):
-   ```bash
-   build_debug.bat
-   ```
-
-3. The EXE will be created in `dist\SMScrapMapper.exe`
-
 ### Build Configuration
 
 The build process:
@@ -90,21 +69,16 @@ The build process:
 scrapmechanic map/
 ├── Main.py                 # Main application entry point
 ├── requirements.txt        # Python dependencies
-├── setup.bat              # Setup and run script
-├── build_one_line.bat     # Build EXE script
-├── build_debug.bat        # Build EXE with console (debug)
 ├── static/                # Web assets (bundled into EXE)
 │   ├── index.html
 │   └── assets/
 │       ├── js/
 │       ├── img/
 │       └── style.css
-├── data/                  # User data folder (created automatically)
-│   ├── cells.json         # Map data (user must provide)
-│   ├── user_data.json     # Saved routes/settings (auto-generated)
-│   └── !_README_!.txt     # Instructions (auto-generated)
-└── dist/                  # Build output
-    └── SMScrapMapper.exe
+└── data/                  # User data folder (created automatically)
+   ├── cells.json         # Map data (user must provide)
+   ├── user_data.json     # Saved routes/settings (auto-generated)
+   └── !_README_!.txt     # Instructions (auto-generated)
 ```
 
 ## Usage
@@ -172,13 +146,6 @@ Access settings via the map controls panel to customize:
 - Verify write permissions in the EXE directory
 - Check console output for error messages (if running from source)
 
-### EXE Build Fails
-
-- Ensure PyInstaller is installed: `pip install pyinstaller`
-- Activate your virtual environment before building
-- Check that all required modules are installed
-- Review the build output for specific error messages
-
 ## Development
 
 ### Running in Development Mode
@@ -204,6 +171,6 @@ This will run the application with debug output and console window.
 [Add your license information here]
 
 ## Credits
-
+og outhor of  un modified sm_overview_map is [the1killer](https://github.com/the1killer/sm_overview)
 Built for Scrap Mechanic map navigation and route planning.
 
