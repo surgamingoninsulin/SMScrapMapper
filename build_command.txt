@@ -1,0 +1,9 @@
+# Corrected PyInstaller Command
+# Run this command from the project root directory
+
+pyinstaller --noconfirm --onefile --noconsole --icon "static\assets\img\favicon.ico" --name "ScrapMechanic Map" --add-data "static;static/" --hidden-import "webview" --hidden-import "webview.platforms" --collect-all "webview" --exclude-module "matplotlib" --exclude-module "numpy" --exclude-module "pandas" --exclude-module "scipy" --exclude-module "tkinter" Main.py
+
+# IMPORTANT: To exclude cells.json, you need to manually edit the spec file
+# OR use the build_exe.spec file which automatically excludes it:
+# pyinstaller build_exe.spec
+

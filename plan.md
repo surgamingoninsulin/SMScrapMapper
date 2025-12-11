@@ -1,386 +1,241 @@
-# Scrap Mechanic Map - Feature Implementation Plan
+
+# Scrap Mechanic Map - UI Redesign Plan
 
 ## Overview
-This plan documents the implementation status of features for the Scrap Mechanic Overview Map application.
-
-## Current Status Summary
-
-### ✅ Fully Implemented Features
-
-1. **Route Planner System** ✅
-   - Google Maps-style route planning overlay
-   - Multi-waypoint route creation
-   - Drag-and-drop waypoint repositioning
-   - Route calculation with A* pathfinding
-   - Water tile avoidance
-   - Road preference pathfinding
-   - Route saving/loading to localStorage (JSON format)
-   - Route deletion and management
-   - "Add to Route Planner" button on map markers
-   - Waypoint markers use consistent blue circle design
-
-2. **Unified Settings System** ✅
-   - Settings modal accessible via cog icon (top-right)
-   - Map display options (zoom, center, grid, borders, coordinates)
-   - Marker options (size, opacity, labels)
-   - Route options (color, width, opacity, glow, snap)
-   - UI customization (panel position, width, auto-collapse)
-   - Settings export/import (JSON)
-   - Settings reset to defaults
-   - Settings persistence in localStorage
-
-3. **Map Marker System** ✅
-   - All markers use route planner waypoint pin style (blue circles)
-   - Old marker.png system completely removed
-   - Click map to create temporary marker
-   - "Add to Route Planner" button in marker popups
-   - Waypoints saved to route planner (window doesn't auto-open)
-   - Consistent visual design across all markers
-
-4. **UI/UX Improvements** ✅
-   - Modern, fancy button styling with gradients
-   - Button colors fixed (success, info, danger, primary)
-   - Unified modal system for settings
-   - Route planner overlay with backdrop blur
-   - Responsive design with optimized modal widths (85% width, max 1000px)
-   - Smooth animations and transitions
-   - Map fully visible on screen (overflow fixed)
-   - Settings modal matches route planner width
+Redesign the map interface to match Google Maps style with a left sidebar that slides in/out, and improve the route planner functionality.
 
 ---
 
-## Implementation Details
+## 1. Route Planner Modal - "Clear Active Route" Button
 
-### Route Planner System
+### Current State:
+- Route planner modal has a purple header bar (`.route-planner-header`)
+- Contains title "Route Planner" and close button (×)
+- Controls section below header has buttons: "Add Waypoint", "Calculate Route", "Save Route", "Open Saved Route", "Clear"
 
-**Status**: ✅ Fully Implemented
+### Required Changes:
+- ✅ Add new button "Clear Active Route" in the purple header bar
+- ✅ Position: Far right, after the close button (×)
+- ✅ Functionality: Should call `clearRouteWithWaypoints()` function (already exists in `sm_overview_map.js`)
 
-**Core Features**:
-- Route planning overlay (full-screen modal)
-- Waypoint creation via map clicks or "Add Waypoint" button
-- Draggable waypoint markers (blue circles)
-- Route calculation between consecutive waypoints
-- Pathfinding algorithms:
-  - `findRoadPath()`: A* pathfinding following roads
-  - `findPathAvoidingWater()`: A* pathfinding avoiding water
-  - `calculatePathBetweenPoints()`: Shortest path with water avoidance and road preference
-- Route visualization with customizable colors, width, opacity, and glow
-- Route saving to localStorage (key: `sm_routes`) with enhanced error handling
-- Route loading from saved routes list
-- Route deletion with confirmation
-- Waypoint list display with delete buttons
-- Route name input field
-- Robust localStorage error handling for GitHub Pages compatibility
+### ✅ Answers:
+1. **Only when route is active** - Button should be hidden when no route is active
+2. **Exact text: "Clear Current Route"**
+3. **Font Awesome map icon** - Use FA icon in the style shown in reference image
 
-**Storage Format**:
-```javascript
-// localStorage key: 'sm_routes'
-[
-  {
-    name: "Route Name",
-    waypoints: [
-      {x: 10, y: 20, lat: -848, lng: -858, name: "Waypoint 1"},
-      {x: 15, y: 25, lat: -843, lng: -853, name: "Waypoint 2"}
-    ]
-  }
-]
+### Implementation:
+- Add button to `.route-planner-header` (purple bar)
+- Position: Far right, after close button (×)
+- Show/hide based on route state
+- Use Font Awesome icon library
+
+---
+
+## 2. Button Styling - Google Maps Style
+
+### Current State:
+- Purple gradient buttons throughout the app
+- Various button styles in CSS
+
+### Required Changes:
+- ✅ Style purple buttons to match Google Maps reference image
+- ✅ Google Maps buttons appear to be:
+  - White/light background with subtle shadows
+  - Rounded corners
+  - Icon + text layout
+  - Hover effects with elevation
+
+### ✅ Answers:
+1. **ALL purple buttons** - Change all buttons to Google Maps style
+2. **Google Maps style** - White/light background with subtle shadows, rounded corners
+3. **Yes, buttons should have icons** - Use Font Awesome icons
+
+### Implementation:
+- Replace all purple gradient buttons with Google Maps style
+- White background, subtle shadows, rounded corners
+- Add Font Awesome icons to buttons
+
+---
+
+## 3. Map Controls - Remove Top Elements
+
+### Current State:
+- Route planner button at top center
+- Settings cog button at top right
+- Various other controls
+
+### Required Changes:
+- ✅ Remove "App download" button (if exists)
+- ✅ Remove buttons on top of map
+- ✅ Keep ONLY zoom controls (+ and - buttons)
+- ✅ Keep left sidebar
+
+### ✅ Answers:
+1. **Move to left sidebar** - Route planner button goes in left bar
+2. **Remove all top buttons** - Remove route planner button and cog button from top, place in left sidebar
+3. **Zoom controls** - Move + and - buttons to left side (like Google Maps)
+4. **Remove all popups/overlays** - Remove all current popups over the map
+5. **Reshape layout** - Make entire layout look and feel like Google Maps
+
+### Implementation:
+- Remove route planner button from top center
+- Remove settings cog button from top right
+- Move zoom controls to left side (bottom left like Google Maps)
+- Remove all modal overlays, integrate into sidebar
+
+---
+
+## 4. Left Sidebar - Google Maps Style
+
+### Current State:
+- No visible left sidebar in current HTML structure
+- Settings overlay is a modal
+
+### Required Changes:
+- ✅ Create left sidebar (thin bar initially)
+- ✅ Top button: Change from "3 stripes" to "COG" icon
+- ✅ When cog clicked: Sidebar slides right (expands) showing settings
+- ✅ When cog clicked again: Sidebar slides left (collapses) hiding settings
+- ✅ Button 2: "Saved" (Opgeslagen) → Change to "CAR" icon
+- ✅ Button 3: "Recent" → Change to "Last Route" with appropriate icon
+- ✅ Button 4: Add new "New Route" button with map icon (below cog)
+
+### Sidebar Structure:
+```
+[COG] ← Top button (Settings)
+[New Route] ← New button (Route Planner)
+[Car] ← Saved routes
+[Clock/Route Icon] ← Last Route
 ```
 
-**Key Functions**:
-- `initializeRoutePlanner()`: Setup route planner UI
-- `openRoutePlanner()` / `closeRoutePlanner()`: Modal management
-- `addWaypoint(x, y, lat, lng, name)`: Add waypoint to route
-- `removeWaypoint(index)`: Remove waypoint
-- `calculateRouteWithWaypoints()`: Calculate and draw route
-- `saveRouteToLocalStorage()`: Save route to localStorage with error handling
-- `loadRoutes()`: Load all saved routes with error handling
-- `loadSavedRoute(index)`: Load specific route
-- `deleteSavedRoute(index)`: Delete route with error handling
-- `updateWaypointsList()`: Update waypoint list UI
-- `updateSavedRoutesList()`: Update saved routes list UI
-
-### Settings System
-
-**Status**: ✅ Fully Implemented
-
-**Features**:
-- Unified settings modal (cog icon, top-right)
-- Settings organized into sections:
-  - Settings (map, pins, routes, UI options)
-  - Map Statistics
-- Settings persistence in localStorage (key: `sm_appSettings`)
-- Settings version tracking and migration
-- Export/Import settings as JSON files
-- Reset to defaults functionality
-
-**Settings Structure**:
-```javascript
-{
-  version: "1.0.0",
-  map: {
-    defaultZoom: 2.5,
-    defaultCenterX: -848,
-    defaultCenterY: -858,
-    showGrid: false,
-    showCellBorders: false,
-    coordinateDisplay: "onHover"
-  },
-  pins: {
-    defaultIcon: "marker.png",
-    autoNaming: true,
-    markerSize: 100,
-    markerOpacity: 100,
-    showLabels: "never"
-  },
-  routes: {
-    defaultColor: "#FF1744",
-    lineWidth: 3,
-    lineOpacity: 100,
-    glowEffect: true,
-    snapToRoads: false,
-    snapToGrid: false
-  },
-  ui: {
-    panelPosition: "right",
-    panelWidth: 200,
-    autoCollapse: false
-  }
-}
-```
-
-**Key Functions**:
-- `loadSettings()`: Load settings from localStorage
-- `saveSettings()`: Save settings to localStorage
-- `getSetting(category, key)`: Get setting value
-- `setSetting(category, key, value)`: Set setting value
-- `applySetting(category, key, value)`: Apply setting changes
-- `migrateSettings(oldSettings)`: Migrate settings from old versions
-- `resetSettings()`: Reset to defaults
-- `exportSettings()`: Export as JSON file
-- `importSettings()`: Import from JSON file
-- `initializeSettingsPanel()`: Create settings UI
-
-### Marker System
-
-**Status**: ✅ Fully Implemented (Old System Removed)
-
-**Current Implementation**:
-- All markers use route planner waypoint pin style (blue circles)
-- Old marker.png system completely removed
-- Click map → temporary marker appears
-- Marker popup shows "Add to Route Planner" button
-- Clicking button adds waypoint to route planner (window stays closed)
-- Waypoint appears in route planner's waypoint list
-- Consistent visual design (blue circle with white border)
-
-**Removed Features**:
-- Old pinned markers system
-- "Pin this marker" checkbox
-- Pinned markers section from settings
-- marker.png image usage
-- Separate pin management system
-
-**Key Functions**:
-- `contentForMarker(x, y, isPinned, iconPath, name)`: Generate marker popup content
-- `addWaypointFromMapClick(latlng)`: Add waypoint from map click
-- Map click handler: Creates temporary marker with "Add to Route Planner" button
+### ✅ Answers:
+1. **Collapsed sidebar width: 70px** - Icons only, no text labels
+2. **Expanded sidebar width: 400px** - Full content panel
+3. **Sidebar behavior:** When button clicked, 400px content slides over the 70px bar. Top right has X button to close. When closed, slides out left to reveal 70px bar again
+4. **Background:** White like Google Maps
+5. **Content display:** Content appears in the 400px expanded panel (not modal overlay)
 
 ---
 
-## File Structure
+## 5. Settings Panel - Slide Animation
 
-### Main Files
-- `assets/js/sm_overview_map.js`: Main application logic (route planner, settings, markers)
-- `assets/style.css`: Styling for all UI components
-- `index.html`: HTML structure with route planner and settings modals
-- `plan.md`: This file (implementation plan)
-- `README.md`: Project documentation
+### Current State:
+- Settings are in a modal overlay
+- Opened via cog button at top right
 
-### Key Components
+### Required Changes:
+- ✅ Move settings into left sidebar
+- ✅ When cog clicked: Sidebar expands to right showing settings content
+- ✅ Smooth slide animation (CSS transition)
+- ✅ When cog clicked again: Sidebar collapses to left
 
-**Route Planner**:
-- Overlay: `#route-planner-overlay`
-- Modal: `.route-planner-modal` (85% width, max 1000px, min 800px)
-- Waypoint list: `#waypoints-list`
-- Saved routes list: `#saved-routes-list`
-- Controls: Route name input, Add Waypoint button, Calculate Route button, Save Route button, Open Saved Route button
-
-**Settings**:
-- Cog button: `#settings-btn-top`
-- Overlay: `#settings-overlay`
-- Modal: `.settings-modal` (85% width, max 1000px, min 800px - matches route planner)
-- Content sections: Settings, Map Statistics
-
-**Markers**:
-- Temporary markers: `clickmarker` variable
-- Waypoint markers: `routeWaypointMarkers` array
-- Marker icon: Blue circle divIcon (consistent across all markers)
+### ✅ Answers:
+1. **Settings display:** 400px content panel slides over 70px bar (buttons remain visible behind/underneath)
+2. **Close button:** X button in top right of 400px panel to close and slide back to 70px
 
 ---
 
-## Pathfinding Algorithms
+## 6. Route Planner Panel - Slide Animation
 
-### Available Functions
+### Current State:
+- Route planner opens as modal overlay
 
-1. **`findRoadPath(startX, startY, endX, endY)`**
-   - A* pathfinding algorithm
-   - Follows road tiles when available
-   - Returns array of {x, y} coordinates
+### Required Changes:
+- ✅ When "New Route" button clicked: Sidebar expands to right showing route planner
+- ✅ Smooth slide animation
+- ✅ When "New Route" clicked again: Sidebar collapses
 
-2. **`findPathAvoidingWater(startX, startY, endX, endY)`**
-   - A* pathfinding algorithm
-   - Completely avoids water tiles
-   - Returns array of {x, y} coordinates
-
-3. **`isWaterTile(cell)`**
-   - Checks if cell contains water
-   - Returns boolean
-
-4. **`findNearestRoadTile(x, y, maxDistance)`**
-   - Finds closest road tile to given coordinates
-   - Returns {x, y} or null
-
-5. **`calculatePathBetweenPoints(startX, startY, endX, endY)`**
-   - Main pathfinding function
-   - Tries multiple strategies:
-     - Direct road path
-     - Road path with nearest road tiles
-     - Water-avoiding path
-   - Returns shortest valid path
+### ✅ Answers:
+1. **Route planner display:** 400px content panel slides over 70px bar (same behavior as settings)
+2. **Panel relationship:** Route planner and settings are separate panels (mutually exclusive)
+3. **Multiple panels:** Only one panel can be open at a time (settings OR route planner, not both)
 
 ---
 
-## UI/UX Specifications
+## 7. Last Route Functionality
 
-### Colors
-- **Route Line Default**: #FF1744 (neon red)
-- **Waypoint Markers**: #667eea (blue-purple gradient)
-- **Button Primary**: #667eea → #764ba2 (purple gradient)
-- **Button Success**: #11998e → #38ef7d (green gradient)
-- **Button Danger**: #eb3349 → #f45c43 (red gradient)
-- **Button Info**: #2196F3 → #21CBF3 (blue gradient)
+### Current State:
+- No "Last Route" feature exists
 
-### Styling
-- **Buttons**: Gradient backgrounds, hover effects, smooth transitions
-- **Modals**: Backdrop blur, rounded corners, shadows, optimized width (85% width, max 1000px)
-- **Waypoint Markers**: Blue circles (20px) with white border (3px)
-- **Route Lines**: Customizable color, width, opacity, glow effect
-- **Map Container**: Full viewport visibility with overflow handling
+### Required Changes:
+- ✅ Track the last calculated/active route
+- ✅ Store in localStorage or memory
+- ✅ When "Last Route" clicked: Load previous route waypoints and display
+- ✅ If no recent route: Disable button (grayed out, non-clickable)
 
----
-
-## Testing Checklist
-
-### Route Planner ✅
-- [x] Route planning overlay opens/closes
-- [x] Waypoints can be added via map clicks
-- [x] Waypoints can be added via "Add Waypoint" button
-- [x] Waypoints are draggable
-- [x] Route calculates between waypoints
-- [x] Route avoids water tiles
-- [x] Route prefers roads when available
-- [x] Route saves to localStorage
-- [x] Routes load from localStorage
-- [x] Routes can be deleted
-- [x] Waypoint list updates correctly
-- [x] Saved routes list displays correctly
-- [x] Route saving works on GitHub Pages with error handling
-- [x] localStorage error handling for quota and security errors
-
-### Settings ✅
-- [x] Settings modal opens/closes via cog icon
-- [x] Settings persist in localStorage
-- [x] Settings load on app start
-- [x] Settings export/import works
-- [x] Settings reset to defaults works
-- [x] Map settings apply correctly
-- [x] Marker settings apply correctly
-- [x] Route settings apply correctly
-- [x] UI settings apply correctly
-
-### Markers ✅
-- [x] All markers use waypoint pin style
-- [x] Map click creates temporary marker
-- [x] "Add to Route Planner" button works
-- [x] Waypoints added without opening route planner
-- [x] Old marker system completely removed
-- [x] No marker.png references remain
+### ✅ Answers:
+1. **Persistence: localStorage** - Same as waypoints currently (see `sm_overview_map.js` for reference, uses `localStorage.setItem('sm_routes', ...)`)
+2. **Definition: Last calculated route** - The most recently calculated route (not saved, but calculated)
+3. **Last Route icon: fa-clock** - Font Awesome clock icon
+4. **Disabled state:** Grayed out + tooltip + disabled (can't click when no route exists)
+5. **Loading behavior:** Need clarification on what "restore everything" means:
+   - Option A: Just display waypoints in the list
+   - Option B: Display waypoints + show markers on map
+   - Option C: Display waypoints + show markers + calculate and draw route line (full restoration)
+   
+   **✅ Answer: Restore everything (Option C)**
+   - Display waypoints in the list ✓
+   - Show waypoint markers on the map ✓
+   - Calculate and draw the route line automatically ✓
 
 ---
 
-## Future Enhancements
+## 8. Icon Requirements
 
-### Planned Features
-1. **Route Optimization**: Auto-optimize routes for shortest distance
-2. **Route Sharing**: Share routes via URL or export file
-3. **Route Templates**: Pre-defined routes for common destinations
-4. **Multiple Routes**: Display multiple routes simultaneously
-5. **Route Analytics**: Track route usage, popular routes
-6. **Mobile Support**: Touch-friendly route editing
-7. **Route Directions**: Turn-by-turn directions
-8. **Route Elevation**: Show elevation profile
-9. **Route Cloning**: Duplicate and modify existing routes
-10. **Route Comparison**: Compare multiple routes side-by-side
+### Icons Needed:
+- ✅ COG icon (Settings) - Replace 3 stripes
+- ✅ CAR icon (Saved routes)
+- ✅ MAP icon (New Route)
+- ✅ ROUTE/CLOCK icon (Last Route)
+- ✅ Clear Active Route icon (if needed)
 
-### Potential Improvements
-- Keyboard shortcuts for route planning
-- Undo/redo functionality
-- Route segment editing (click segment to add waypoint)
-- Waypoint reordering via drag-and-drop in list
-- Route statistics display (distance, waypoint count)
-- Snap to roads/grid options (settings exist, need implementation)
-- Route export/import as JSON files
-- Route sharing via URL hash
+### ✅ Answers:
+1. **Font Awesome icons** - Use Font Awesome (FA) icon library (confirmed from point 1)
+2. **Icon size:** Need to determine (typically 24px or 32px for Google Maps style)
+
+### Icons Needed:
+- ⚙️ COG icon (Settings) - `fa fa-cog` or `fa fa-gear`
+- 🗺️ MAP icon (New Route) - `fa fa-map` or `fa fa-map-marker`
+- 🚗 CAR icon (Saved routes) - `fa fa-car` or `fa fa-bookmark`
+- ⏰ CLOCK/ROUTE icon (Last Route) - `fa fa-clock-o` or `fa fa-route`
+- 🗺️ MAP icon (Clear Current Route) - `fa fa-map` or similar
+
+### ✅ Icon Size:
+- **24px** - Standard Google Maps icon size (will use this as default, can adjust if needed)
+
+---
+
+## Implementation Order
+
+1. ✅ Create plan.md and gather requirements
+2. ✅ Get answers to questions
+3. ✅ Update plan.md with answers
+4. ⏳ Add Font Awesome library to HTML
+5. ⏳ Implement left sidebar structure (HTML)
+6. ⏳ Style sidebar with Google Maps look (CSS) - 70px collapsed, 400px expanded
+7. ⏳ Add slide animations (CSS transitions)
+8. ⏳ Move settings into sidebar panel (HTML/JS)
+9. ⏳ Move route planner into sidebar panel (HTML/JS)
+10. ⏳ Add "Clear Current Route" button to route planner header (only when route active)
+11. ⏳ Implement "Last Route" functionality (JS) - localStorage, restore all
+12. ⏳ Update button styling to match Google Maps (white buttons with icons)
+13. ⏳ Remove top buttons, move zoom controls to left side
+14. ⏳ Remove all modal overlays, integrate into sidebar
+15. ⏳ Test all functionality
+
+---
+
+## Files to Modify
+
+1. `static/index.html` - Add sidebar structure, modify route planner header
+2. `static/assets/style.css` - Add sidebar styles, Google Maps button styles, animations
+3. `static/assets/js/sm_overview_map.js` - Add sidebar logic, last route tracking, button handlers
 
 ---
 
 ## Notes
 
-- ✅ Route planner is fully functional with Google Maps-style overlay
-- ✅ Pathfinding algorithms are implemented and tested
-- ✅ Water avoidance and road preference work correctly
-- ✅ Routes are saved to localStorage (JSON format)
-- ✅ Route storage key: `sm_routes` in localStorage
-- ✅ Routes persist across browser sessions
-- ✅ Enhanced localStorage error handling for GitHub Pages compatibility
-- ✅ Map fully visible on screen (overflow fixed)
-- ✅ Modal widths optimized (85% width, max 1000px) for better UX
-- ✅ Settings modal matches route planner width
-- ✅ Old marker system completely removed
-- ✅ All markers use consistent waypoint pin design
-- ✅ Settings system is fully functional
-- ✅ Button colors are fixed and working
-- ⚠️ Snap to roads/grid options exist in settings but not fully implemented
-- ⚠️ Grid/cell border visualization settings exist but not visually implemented
-- Consider performance for routes with many waypoints
-- LocalStorage has size limits - error handling now includes quota exceeded detection
+- All work will be done in the `static` folder only
+- Reference image shows Google Maps with white sidebar, rounded buttons, icons
+- Need to maintain existing functionality while changing UI
 
----
-
-## Version History
-
-### Latest Update
-- **Fixed**: Route saving on GitHub Pages with enhanced localStorage error handling
-- **Fixed**: Map visibility - map now fully visible on screen (overflow fixed)
-- **Removed**: "Add Pin on Map Click" checkbox (no longer needed)
-- **Updated**: Modal widths optimized (85% width, max 1000px, min 800px)
-- **Updated**: Settings modal matches route planner width
-- **Improved**: localStorage error handling with quota exceeded and security error detection
-- **Improved**: Save verification to ensure routes are properly saved
-
-### Previous Update
-- **Removed**: Old marker.png system completely
-- **Added**: All markers use route planner waypoint pins
-- **Added**: "Add to Route Planner" button on map markers
-- **Fixed**: Button colors (success, info, danger now have !important)
-- **Updated**: Unified settings modal with cog icon
-- **Updated**: Route planner fully integrated with marker system
-
-### Previous Updates
-- Route saving to localStorage (replaced XML downloads)
-- Route loading and deletion UI
-- Unified settings modal
-- Google Maps-style route planner overlay
-- Multi-waypoint route system
-- Drag-and-drop waypoints
-- Pathfinding algorithms (A*, water avoidance, road preference)

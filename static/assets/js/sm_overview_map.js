@@ -806,44 +806,38 @@ SMOverviewMap = (function() {
         var settingsContent = document.getElementById('settings-content');
         if(!settingsContent) return;
         
-        var html = '<div style="font-size: 0.8em;">';
+        var html = '<div style="font-size: 1em; line-height: 1.5;">';
         
         // Map Options
         html += '<div class="stat-title" style="margin-top: 0;">Map Display</div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Default Zoom: <input type="range" id="setting-default-zoom" min="0" max="5" step="0.5" value="' + (appSettings.map.defaultZoom || 2.5) + '" style="width: 100%;"><span id="default-zoom-value">' + (appSettings.map.defaultZoom || 2.5) + '</span></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Default Center X: <input type="number" id="setting-center-x" value="' + (appSettings.map.defaultCenterX || -848) + '" style="width: 100%; margin-top: 2px;"></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Default Center Y: <input type="number" id="setting-center-y" value="' + (appSettings.map.defaultCenterY || -858) + '" style="width: 100%; margin-top: 2px;"></div>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-show-grid" ' + (appSettings.map.showGrid ? 'checked' : '') + '> Show Grid</label>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-show-borders" ' + (appSettings.map.showCellBorders ? 'checked' : '') + '> Show Cell Borders</label>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Coordinate Display: <select id="setting-coord-display" style="width: 100%; margin-top: 2px;"><option value="always"' + (appSettings.map.coordinateDisplay === 'always' ? ' selected' : '') + '>Always</option><option value="onHover"' + (appSettings.map.coordinateDisplay === 'onHover' ? ' selected' : '') + '>On Hover</option><option value="onClick"' + (appSettings.map.coordinateDisplay === 'onClick' ? ' selected' : '') + '>On Click</option><option value="never"' + (appSettings.map.coordinateDisplay === 'never' ? ' selected' : '') + '>Never</option></select></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Default Zoom: <input type="range" id="setting-default-zoom" min="0" max="5" step="0.5" value="' + (appSettings.map.defaultZoom || 2.5) + '" style="width: 100%;"><span id="default-zoom-value">' + (appSettings.map.defaultZoom || 2.5) + '</span></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Default Center X: <input type="number" id="setting-center-x" value="' + (appSettings.map.defaultCenterX || -848) + '" style="width: 100%; margin-top: 2px;"></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Default Center Y: <input type="number" id="setting-center-y" value="' + (appSettings.map.defaultCenterY || -858) + '" style="width: 100%; margin-top: 2px;"></div>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-show-grid" ' + (appSettings.map.showGrid ? 'checked' : '') + '> Show Grid</label>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-show-borders" ' + (appSettings.map.showCellBorders ? 'checked' : '') + '> Show Cell Borders</label>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Coordinate Display: <select id="setting-coord-display" style="width: 100%; margin-top: 2px;"><option value="always"' + (appSettings.map.coordinateDisplay === 'always' ? ' selected' : '') + '>Always</option><option value="onHover"' + (appSettings.map.coordinateDisplay === 'onHover' ? ' selected' : '') + '>On Hover</option><option value="onClick"' + (appSettings.map.coordinateDisplay === 'onClick' ? ' selected' : '') + '>On Click</option><option value="never"' + (appSettings.map.coordinateDisplay === 'never' ? ' selected' : '') + '>Never</option></select></div>';
         
         // Pin Options
         html += '<div class="stat-title" style="margin-top: 10px;">Pins & Markers</div>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-auto-naming" ' + (appSettings.pins.autoNaming ? 'checked' : '') + '> Auto-naming (poi x,y)</label>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Marker Size: <input type="range" id="setting-marker-size" min="50" max="200" value="' + appSettings.pins.markerSize + '" style="width: 100%;"><span id="marker-size-value">' + appSettings.pins.markerSize + '%</span></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Marker Opacity: <input type="range" id="setting-marker-opacity" min="0" max="100" value="' + appSettings.pins.markerOpacity + '" style="width: 100%;"><span id="marker-opacity-value">' + appSettings.pins.markerOpacity + '%</span></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Show Labels: <select id="setting-show-labels" style="width: 100%; margin-top: 2px;"><option value="always"' + (appSettings.pins.showLabels === 'always' ? ' selected' : '') + '>Always</option><option value="onHover"' + (appSettings.pins.showLabels === 'onHover' ? ' selected' : '') + '>On Hover</option><option value="never"' + (appSettings.pins.showLabels === 'never' ? ' selected' : '') + '>Never</option></select></div>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-auto-naming" ' + (appSettings.pins.autoNaming ? 'checked' : '') + '> Auto-naming (poi x,y)</label>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Marker Size: <input type="range" id="setting-marker-size" min="50" max="200" value="' + appSettings.pins.markerSize + '" style="width: 100%;"><span id="marker-size-value">' + appSettings.pins.markerSize + '%</span></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Marker Opacity: <input type="range" id="setting-marker-opacity" min="0" max="100" value="' + appSettings.pins.markerOpacity + '" style="width: 100%;"><span id="marker-opacity-value">' + appSettings.pins.markerOpacity + '%</span></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Show Labels: <select id="setting-show-labels" style="width: 100%; margin-top: 2px;"><option value="always"' + (appSettings.pins.showLabels === 'always' ? ' selected' : '') + '>Always</option><option value="onHover"' + (appSettings.pins.showLabels === 'onHover' ? ' selected' : '') + '>On Hover</option><option value="never"' + (appSettings.pins.showLabels === 'never' ? ' selected' : '') + '>Never</option></select></div>';
         
         // Route Options
         html += '<div class="stat-title" style="margin-top: 10px;">Routes</div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Default Color: <input type="color" id="setting-route-color" value="' + appSettings.routes.defaultColor + '" style="width: 100%; margin-top: 2px;"></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Line Width: <input type="range" id="setting-line-width" min="1" max="10" value="' + appSettings.routes.lineWidth + '" style="width: 100%;"><span id="line-width-value">' + appSettings.routes.lineWidth + 'px</span></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Line Opacity: <input type="range" id="setting-line-opacity" min="0" max="100" value="' + appSettings.routes.lineOpacity + '" style="width: 100%;"><span id="line-opacity-value">' + appSettings.routes.lineOpacity + '%</span></div>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-glow-effect" ' + (appSettings.routes.glowEffect ? 'checked' : '') + '> Glow Effect</label>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-snap-roads" ' + (appSettings.routes.snapToRoads ? 'checked' : '') + '> Snap to Roads</label>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-snap-grid" ' + (appSettings.routes.snapToGrid ? 'checked' : '') + '> Snap to Grid</label>';
-        
-        // UI Options
-        html += '<div class="stat-title" style="margin-top: 10px;">UI Customization</div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Panel Position: <select id="setting-panel-position" style="width: 100%; margin-top: 2px;"><option value="right"' + (appSettings.ui.panelPosition === 'right' ? ' selected' : '') + '>Right</option><option value="left"' + (appSettings.ui.panelPosition === 'left' ? ' selected' : '') + '>Left</option></select></div>';
-        html += '<div style="margin: 5px 0; font-size: 0.9em;">Panel Width: <input type="range" id="setting-panel-width" min="150" max="400" value="' + (appSettings.ui.panelWidth || 200) + '" style="width: 100%;"><span id="panel-width-value">' + (appSettings.ui.panelWidth || 200) + 'px</span></div>';
-        html += '<label style="display: block; margin: 5px 0; font-size: 0.9em;"><input type="checkbox" id="setting-auto-collapse" ' + (appSettings.ui.autoCollapse ? 'checked' : '') + '> Auto-collapse panels</label>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Default Color: <input type="color" id="setting-route-color" value="' + appSettings.routes.defaultColor + '" style="width: 100%; margin-top: 2px;"></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Line Width: <input type="range" id="setting-line-width" min="1" max="10" value="' + appSettings.routes.lineWidth + '" style="width: 100%;"><span id="line-width-value">' + appSettings.routes.lineWidth + 'px</span></div>';
+        html += '<div style="margin: 4px 0; font-size: 1em;">Line Opacity: <input type="range" id="setting-line-opacity" min="0" max="100" value="' + appSettings.routes.lineOpacity + '" style="width: 100%;"><span id="line-opacity-value">' + appSettings.routes.lineOpacity + '%</span></div>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-glow-effect" ' + (appSettings.routes.glowEffect ? 'checked' : '') + '> Glow Effect</label>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-snap-roads" ' + (appSettings.routes.snapToRoads ? 'checked' : '') + '> Snap to Roads</label>';
+        html += '<label style="display: block; margin: 4px 0; font-size: 1em;"><input type="checkbox" id="setting-snap-grid" ' + (appSettings.routes.snapToGrid ? 'checked' : '') + '> Snap to Grid</label>';
         
         // Data Management
         html += '<div class="stat-title" style="margin-top: 10px;">Data</div>';
-        html += '<button id="export-settings-btn" class="fancy-btn success" style="width: 100%; margin: 2px 0;">Export Settings</button>';
-        html += '<button id="import-settings-btn" class="fancy-btn info" style="width: 100%; margin: 2px 0;">Import Settings</button>';
-        html += '<button id="reset-settings-btn" class="fancy-btn danger" style="width: 100%; margin: 2px 0;">Reset to Defaults</button>';
+        html += '<button id="export-settings-btn" class="fancy-btn success" style="width: 100%; margin: 3px 0; padding: 8px; font-size: 1em;">Export Settings</button>';
+        html += '<button id="import-settings-btn" class="fancy-btn info" style="width: 100%; margin: 3px 0; padding: 8px; font-size: 1em;">Import Settings</button>';
+        html += '<button id="reset-settings-btn" class="fancy-btn danger" style="width: 100%; margin: 3px 0; padding: 8px; font-size: 1em;">Reset to Defaults</button>';
         
         html += '</div>';
         
@@ -979,30 +973,6 @@ SMOverviewMap = (function() {
             });
         }
         
-        // UI settings
-        var panelPosition = document.getElementById('setting-panel-position');
-        if(panelPosition) {
-            panelPosition.addEventListener('change', function() {
-                setSetting('ui', 'panelPosition', this.value);
-                applyPanelPosition(this.value);
-            });
-        }
-        
-        var panelWidth = document.getElementById('setting-panel-width');
-        var panelWidthValue = document.getElementById('panel-width-value');
-        if(panelWidth) {
-            panelWidth.addEventListener('input', function() {
-                if(panelWidthValue) panelWidthValue.textContent = this.value + 'px';
-                setSetting('ui', 'panelWidth', parseInt(this.value));
-            });
-        }
-        
-        var autoCollapse = document.getElementById('setting-auto-collapse');
-        if(autoCollapse) {
-            autoCollapse.addEventListener('change', function() {
-                setSetting('ui', 'autoCollapse', this.checked);
-            });
-        }
         
         // Data management buttons
         var exportBtn = document.getElementById('export-settings-btn');
@@ -1897,59 +1867,16 @@ SMOverviewMap = (function() {
         // Apply initial UI settings
         applyInitialUISettings();
         
-        // Setup settings cog button (top right) - opens modal
-        var settingsCogBtn = document.getElementById("settings-btn-top");
-        if(settingsCogBtn) {
-            settingsCogBtn.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                openSettingsModal();
-            });
-        }
+        // Initialize sidebar
+        initializeSidebar();
         
-        // Setup settings modal close button
-        var settingsCloseBtn = document.getElementById("close-settings");
-        if(settingsCloseBtn) {
-            settingsCloseBtn.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                closeSettingsModal();
-            });
-        }
-        
-        // Close modal when clicking overlay
-        var settingsOverlay = document.getElementById("settings-overlay");
-        if(settingsOverlay) {
-            settingsOverlay.addEventListener('click', function(event) {
-                if(event.target === settingsOverlay) {
-                    closeSettingsModal();
-                }
-            });
-        }
-        
-        // Functions to open/close settings modal
+        // Functions to open/close settings modal (kept for compatibility, but now uses sidebar)
         function openSettingsModal() {
-            var overlay = document.getElementById("settings-overlay");
-            var cogBtn = document.getElementById("settings-btn-top");
-            if(overlay) {
-                overlay.classList.remove("collapsed");
-                if(cogBtn) cogBtn.classList.add("active");
-                
-                // Ensure content sections are visible
-                var settingsContent = document.getElementById("settings-content");
-                var statsContent = document.getElementById("stats-content");
-                if(settingsContent) settingsContent.classList.remove("collapsed");
-                if(statsContent) statsContent.classList.remove("collapsed");
-            }
+            openSidebarPanel('settings');
         }
         
         function closeSettingsModal() {
-            var overlay = document.getElementById("settings-overlay");
-            var cogBtn = document.getElementById("settings-btn-top");
-            if(overlay) {
-                overlay.classList.add("collapsed");
-                if(cogBtn) cogBtn.classList.remove("active");
-            }
+            closeSidebarPanel();
         }
         
         L.GridLayer.DebugCoords = L.GridLayer.extend({
@@ -2042,7 +1969,26 @@ SMOverviewMap = (function() {
             zoomDelta: 0.5,
             wheelPxPerZoomLevel: 120
         })
-        map.attributionControl.addAttribution("<a target='_new' href='https://github.com/the1killer/sm_overview'>sm_overview By The1Killer</a>")
+        
+        
+        // Calculate 
+        // ============================================================
+        // ATTRIBUTION CONTROL CONFIGURATION
+        // ============================================================
+        // The attribution control appears in the bottom-left corner of the map
+        // It shows "Leaflet | sm_overview" by default
+        // 
+        // To customize the attribution:
+        // 1. Change the text/link below
+        // 2. Or remove this line to use only Leaflet's default attribution
+        // 3. Or hide the attribution entirely by uncommenting the line below:
+        map.attributionControl.setPrefix(false);
+        // ============================================================
+        // map.attributionControl.addAttribution("<a target='_new' href='https://github.com/surgamingoninsulin/SMScrapMapper'>SMScrapMapper</a>");
+        // map.attributionControl.addAttribution("<a target='_new' href='https://github.com/the1killer/sm_overview'>sm_overview</a>")
+        // ============================================================
+        // END ATTRIBUTION CONTROL CONFIGURATION
+        // ============================================================
 
         map.createPane('poiPane').style.zIndex = 300;
         
@@ -2065,8 +2011,18 @@ SMOverviewMap = (function() {
 
         if(inputjson) {
             loadCells(JSON.parse(inputjson));
+        } else if(window.__cellsJsonData) {
+            // Use pre-loaded JSON data from Python
+            loadCells(JSON.parse(window.__cellsJsonData));
+            delete window.__cellsJsonData; // Clean up
+        } else if(window.__cellsJsonNotFound) {
+            // cells.json was not found next to EXE, don't try to load from old location
+            console.warn("cells.json not found. Please place cells.json next to the application executable.");
+            alert("ERROR: cells.json not found!\n\nPlease place cells.json next to the EXE file.\n\nThe application will continue but may not function correctly without cells.json.");
         } else {
-        loadFile(basePath + "assets/json/cells.json",loadCells);
+            // Fallback: try to load from old location (only if not explicitly marked as not found)
+            console.log("Attempting to load cells.json from old location: " + basePath + "../data/cells.json");
+            loadFile(basePath + "../data/cells.json",loadCells);
         }
         
         // Load settings first
@@ -2076,6 +2032,10 @@ SMOverviewMap = (function() {
         discoverMarkerIcons();
         // Load saved routes
         loadRoutes();
+        // Load last route button state
+        if(typeof updateLastRouteButton === 'function') {
+            updateLastRouteButton();
+        }
 
         map.on('click', function(e) {
             // Check if in route planning waypoint mode first
@@ -2587,6 +2547,252 @@ SMOverviewMap = (function() {
         "POI_SILODISTRICT_XL": 8
     };
 
+    // Sidebar Functions
+    var lastCalculatedRoute = null; // Store last calculated route for "Last Route" feature
+    
+    function initializeSidebar() {
+        var sidebar = document.getElementById('left-sidebar');
+        if(!sidebar) return;
+        
+        // Settings button
+        var settingsBtn = document.getElementById('sidebar-settings-btn');
+        if(settingsBtn) {
+            settingsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                this.blur();
+                toggleSidebarPanel('settings');
+            });
+            settingsBtn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+        }
+        
+        // New Route button
+        var newRouteBtn = document.getElementById('sidebar-new-route-btn');
+        if(newRouteBtn) {
+            newRouteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                this.blur();
+                toggleSidebarPanel('route-planner');
+            });
+            newRouteBtn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+        }
+        
+        
+        // Last Route button
+        var lastRouteBtn = document.getElementById('sidebar-last-route-btn');
+        if(lastRouteBtn) {
+            lastRouteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                this.blur();
+                if(!lastRouteBtn.disabled && lastCalculatedRoute) {
+                    loadLastRoute();
+                }
+            });
+            lastRouteBtn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+            updateLastRouteButton();
+        }
+        
+        // Close buttons
+        var closeSettingsBtn = document.getElementById('close-settings-panel');
+        if(closeSettingsBtn) {
+            closeSettingsBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeSidebarPanel();
+            });
+        }
+        
+        var closeRoutePlannerBtn = document.getElementById('close-route-planner-panel');
+        if(closeRoutePlannerBtn) {
+            closeRoutePlannerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                closeSidebarPanel();
+            });
+        }
+        
+    }
+    
+    function toggleSidebarPanel(panelName) {
+        var sidebar = document.getElementById('left-sidebar');
+        var settingsPanel = document.getElementById('sidebar-settings-panel');
+        var routePlannerPanel = document.getElementById('sidebar-route-planner-panel');
+        var sidebarContent = document.querySelector('.sidebar-content');
+        
+        if(!sidebar) return;
+        
+        // Check if same panel is already open
+        var isExpanded = sidebar.classList.contains('expanded');
+        var currentPanel = settingsPanel && settingsPanel.classList.contains('active') ? 'settings' :
+                          routePlannerPanel && routePlannerPanel.classList.contains('active') ? 'route-planner' : null;
+        
+        if(isExpanded && currentPanel === panelName) {
+            // Close if same panel clicked
+            closeSidebarPanel();
+            return;
+        }
+        
+        // Close other panels first
+        if(settingsPanel) {
+            settingsPanel.classList.remove('active');
+            settingsPanel.classList.add('collapsed');
+        }
+        if(routePlannerPanel) {
+            routePlannerPanel.classList.remove('active');
+            routePlannerPanel.classList.add('collapsed');
+        }
+        
+        // Open requested panel FIRST to trigger expansion
+        if(panelName === 'settings' && settingsPanel) {
+            settingsPanel.classList.remove('collapsed');
+            settingsPanel.classList.add('active');
+            sidebar.classList.add('expanded');
+            
+            // Force immediate visibility and width to prevent orange background
+            if(sidebarContent) {
+                sidebarContent.style.opacity = '1';
+                sidebarContent.style.visibility = 'visible';
+                sidebarContent.style.width = '550px';
+                sidebarContent.style.minWidth = '550px';
+            }
+            // Ensure settings content is loaded
+            if(typeof initializeSettingsPanel === 'function') {
+                initializeSettingsPanel();
+            }
+            // Load stats if available
+            if(typeof loadStats === 'function') {
+                loadStats();
+            }
+        } else if(panelName === 'route-planner' && routePlannerPanel) {
+            routePlannerPanel.classList.remove('collapsed');
+            routePlannerPanel.classList.add('active');
+            sidebar.classList.add('expanded');
+            
+            // Force immediate visibility and width to prevent orange background
+            if(sidebarContent) {
+                sidebarContent.style.opacity = '1';
+                sidebarContent.style.visibility = 'visible';
+                sidebarContent.style.width = '550px';
+                sidebarContent.style.minWidth = '550px';
+            }
+            
+            updateWaypointsList();
+        }
+    }
+    
+    function closeSidebarPanel() {
+        var sidebar = document.getElementById('left-sidebar');
+        var settingsPanel = document.getElementById('sidebar-settings-panel');
+        var routePlannerPanel = document.getElementById('sidebar-route-planner-panel');
+        var sidebarContent = document.querySelector('.sidebar-content');
+        
+        if(sidebar) {
+            sidebar.classList.remove('expanded');
+        }
+        if(settingsPanel) {
+            settingsPanel.classList.remove('active');
+            settingsPanel.classList.add('collapsed');
+        }
+        if(routePlannerPanel) {
+            routePlannerPanel.classList.remove('active');
+            routePlannerPanel.classList.add('collapsed');
+        }
+        
+        // Hide sidebar-content when closing to prevent orange background showing
+        if(sidebarContent) {
+            // Reset inline styles after transition
+            setTimeout(function() {
+                if(!sidebar.classList.contains('expanded')) {
+                    sidebarContent.style.opacity = '';
+                    sidebarContent.style.visibility = '';
+                    sidebarContent.style.width = '';
+                    sidebarContent.style.minWidth = '';
+                }
+            }, 300);
+        }
+        
+        // Disable waypoint mode if active
+        disableWaypointMode();
+    }
+    
+    
+    function loadLastRoute() {
+        if(!lastCalculatedRoute) return;
+        
+        // Clear current route
+        clearRouteWithWaypoints();
+        
+        // Restore waypoints
+        lastCalculatedRoute.waypoints.forEach(function(wp) {
+            addWaypoint(wp.x, wp.y, wp.lat, wp.lng, wp.name);
+        });
+        
+        // Update waypoints list
+        updateWaypointsList();
+        
+        // Calculate and draw route (this will also show the markers)
+        if(routeWaypoints.length >= 2) {
+            calculateRouteWithWaypoints();
+        }
+    }
+    
+    function updateLastRouteButton() {
+        var lastRouteBtn = document.getElementById('sidebar-last-route-btn');
+        if(!lastRouteBtn) return;
+        
+        // Check if last route exists in localStorage
+        try {
+            var saved = localStorage.getItem('sm_lastRoute');
+            if(saved) {
+                lastCalculatedRoute = JSON.parse(saved);
+                lastRouteBtn.disabled = false;
+                lastRouteBtn.title = 'Last Route';
+            } else {
+                lastCalculatedRoute = null;
+                lastRouteBtn.disabled = true;
+                lastRouteBtn.title = 'No recent route';
+            }
+        } catch(e) {
+            lastCalculatedRoute = null;
+            lastRouteBtn.disabled = true;
+            lastRouteBtn.title = 'No recent route';
+        }
+    }
+    
+    function saveLastRoute() {
+        if(routeWaypoints.length < 2 || !routeLine) return;
+        
+        // Save last calculated route
+        var routeData = {
+            waypoints: routeWaypoints.map(function(wp) {
+                return {
+                    x: wp.x,
+                    y: wp.y,
+                    lat: wp.lat,
+                    lng: wp.lng,
+                    name: wp.name || ''
+                };
+            })
+        };
+        
+        try {
+            localStorage.setItem('sm_lastRoute', JSON.stringify(routeData));
+            lastCalculatedRoute = routeData;
+            updateLastRouteButton();
+        } catch(e) {
+            console.error('Failed to save last route:', e);
+        }
+    }
+    
     // Route Planner Functions
     function initializeRoutePlanner() {
         var routePlannerBtn = document.getElementById('route-planner-btn');
@@ -2640,6 +2846,24 @@ SMOverviewMap = (function() {
             });
         }
         
+        
+        if(clearBtn) {
+            clearBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                clearRouteWithWaypoints();
+            });
+        }
+        
+        // Clear Current Route button in header
+        var clearCurrentRouteBtn = document.getElementById('clear-current-route-btn');
+        if(clearCurrentRouteBtn) {
+            clearCurrentRouteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                clearRouteWithWaypoints();
+            });
+        }
+        
         var openSavedRouteBtn = document.getElementById('open-saved-route-btn');
         if(openSavedRouteBtn) {
             openSavedRouteBtn.addEventListener('click', function(e) {
@@ -2659,34 +2883,18 @@ SMOverviewMap = (function() {
             });
         }
         
-        if(clearBtn) {
-            clearBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                clearRouteWithWaypoints();
-            });
-        }
-        
         // Map click handler for waypoints is now in the main map.on('click') handler above
     }
     
+    
     function openRoutePlanner() {
-        var overlay = document.getElementById('route-planner-overlay');
-        var btn = document.getElementById('route-planner-btn');
-        if(overlay) {
-            overlay.classList.remove('collapsed');
-            if(btn) btn.classList.add('active');
-            routePlanningMode = true;
-            updateWaypointsList();
-        }
+        // Open route planner in sidebar
+        toggleSidebarPanel('route-planner');
     }
     
     function closeRoutePlanner() {
-        var overlay = document.getElementById('route-planner-overlay');
-        var btn = document.getElementById('route-planner-btn');
-        if(overlay) {
-            overlay.classList.add('collapsed');
-            if(btn) btn.classList.remove('active');
-        }
+        // Close sidebar panel
+        closeSidebarPanel();
         routePlanningMode = false;
         // Disable add pin from map mode when closing
         addPinFromMapMode = false;
@@ -2779,11 +2987,17 @@ SMOverviewMap = (function() {
         var marker = L.marker([lat, lng], {
             icon: waypointIcon,
             draggable: true
-        }).addTo(map);
+        });
+        
+        // Don't add to map immediately - will be shown when route is calculated
+        // marker.addTo(map); // Removed - markers will be shown/hidden based on route state
         
         marker.bindPopup(waypoint.name);
         waypoint.marker = marker;
         routeWaypointMarkers.push(marker);
+        
+        // Initially hide the marker
+        updateWaypointMarkerVisibility();
         
         // Make marker draggable and update on drag
         marker.on('dragend', function() {
@@ -2797,10 +3011,6 @@ SMOverviewMap = (function() {
             waypoint.x = Math.floor(newX / 64);
             waypoint.y = Math.floor(newY / 64);
             updateWaypointsList();
-            // Recalculate route if it exists
-            if(routeLine) {
-                calculateRouteWithWaypoints();
-            }
             // Recalculate route if it exists
             if(routeLine) {
                 calculateRouteWithWaypoints();
@@ -2820,9 +3030,49 @@ SMOverviewMap = (function() {
             routeWaypoints.splice(index, 1);
             routeWaypointMarkers.splice(index, 1);
             updateWaypointsList();
+            // Update marker visibility after removal
+            updateWaypointMarkerVisibility();
             // Recalculate route if it exists
             if(routeLine) {
                 calculateRouteWithWaypoints();
+            }
+        }
+    }
+    
+    function updateWaypointMarkerVisibility() {
+        // Hide all markers initially
+        routeWaypointMarkers.forEach(function(marker) {
+            if(map.hasLayer(marker)) {
+                map.removeLayer(marker);
+            }
+        });
+        
+        // Only show markers if route is calculated (routeLine exists)
+        if(routeLine && routeWaypoints.length > 0) {
+            if(routeWaypoints.length <= 2) {
+                // Show all markers if 2 or fewer waypoints
+                routeWaypoints.forEach(function(waypoint) {
+                    if(waypoint.marker && !map.hasLayer(waypoint.marker)) {
+                        waypoint.marker.addTo(map);
+                    }
+                });
+            } else {
+                // Show only first and last marker if more than 2 waypoints
+                // First waypoint
+                if(routeWaypoints[0].marker && !map.hasLayer(routeWaypoints[0].marker)) {
+                    routeWaypoints[0].marker.addTo(map);
+                }
+                // Last waypoint
+                var lastIndex = routeWaypoints.length - 1;
+                if(routeWaypoints[lastIndex].marker && !map.hasLayer(routeWaypoints[lastIndex].marker)) {
+                    routeWaypoints[lastIndex].marker.addTo(map);
+                }
+                // Hide middle waypoints
+                for(var i = 1; i < lastIndex; i++) {
+                    if(routeWaypoints[i].marker && map.hasLayer(routeWaypoints[i].marker)) {
+                        map.removeLayer(routeWaypoints[i].marker);
+                    }
+                }
             }
         }
     }
@@ -2839,7 +3089,7 @@ SMOverviewMap = (function() {
             routeWaypoints.forEach(function(waypoint, index) {
                 html += '<div class="waypoint-item">';
                 html += '<div class="waypoint-number">' + (index + 1) + '</div>';
-                html += '<div class="waypoint-location">' + waypoint.name + ' (' + waypoint.x + ', ' + waypoint.y + ')</div>';
+                html += '<div class="waypoint-location">' + escapeHtml(waypoint.name) + ' (' + waypoint.x + ', ' + waypoint.y + ')</div>';
                 html += '<div class="waypoint-actions">';
                 html += '<button class="waypoint-btn delete" data-waypoint-index="' + index + '">Delete</button>';
                 html += '</div>';
@@ -2936,10 +3186,20 @@ SMOverviewMap = (function() {
             }, 100);
         }
         
+        // Show waypoint markers (only first and last if > 2 waypoints)
+        updateWaypointMarkerVisibility();
+        
         if(status) {
             status.textContent = 'Route calculated successfully! ' + routeWaypoints.length + ' waypoints, ' + allLatLngs.length + ' path points';
             status.className = 'route-status success';
         }
+        
+        // Save last route after successful calculation (with small delay to ensure routeLine is fully added)
+        setTimeout(function() {
+            if(typeof saveLastRoute === 'function') {
+                saveLastRoute();
+            }
+        }, 50);
     }
     
     function calculatePathBetweenPoints(startX, startY, endX, endY) {
@@ -2964,9 +3224,11 @@ SMOverviewMap = (function() {
             routeLine = null;
         }
         
-        // Clear waypoint markers
+        // Hide all waypoint markers
         routeWaypointMarkers.forEach(function(marker) {
-            map.removeLayer(marker);
+            if(map.hasLayer(marker)) {
+                map.removeLayer(marker);
+            }
         });
         routeWaypointMarkers = [];
         routeWaypoints = [];

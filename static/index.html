@@ -1,0 +1,164 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+        <meta name="application-name" content="SM Overview Map" />
+        <meta name="author" content="The1Killer" />
+        <meta name="User" content="GamingOnInsulin" />
+        <meta name="generator" content="https://github.com/the1killer/sm_overview"/>
+        <link rel="icon" href="./assets/img/favicon.png" type="image/png" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <link rel="stylesheet" href="./assets/style.css" />
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script src="assets/js/libs/leaflet-hash.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+        <script src="assets/js/cellparser.js"></script>
+        <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Lato&family=Roboto:wght@300;400&&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <title>Scrap Mechanic | ScrapMap</title>
+        <style>
+            
+        </style>
+        
+    </head>
+    <body>
+            <!-- Left Sidebar -->
+            <div id="left-sidebar" class="left-sidebar">
+                <!-- Sidebar Icon Buttons (70px width) -->
+                <div class="sidebar-icons">
+                    <button id="sidebar-settings-btn" class="sidebar-icon-btn" title="Settings">
+                        <i class="fas fa-cog"></i>
+                        <span class="btn-label">Settings</span>
+                    </button>
+                    <button id="sidebar-new-route-btn" class="sidebar-icon-btn" title="New Route">
+                        <i class="fas fa-car"></i>
+                        <span class="btn-label">New Route</span>
+                    </button>
+                    <button id="sidebar-last-route-btn" class="sidebar-icon-btn" title="Last Route" disabled>
+                        <i class="fas fa-clock"></i>
+                        <span class="btn-label">Last Route</span>
+                    </button>
+                </div>
+                
+                <!-- Sidebar Content Panel (400px width when expanded) -->
+                <div class="sidebar-content">
+                    <!-- Settings Panel -->
+                    <div id="sidebar-settings-panel" class="sidebar-panel collapsed">
+                        <div class="sidebar-panel-header">
+                            <h2>Map Controls</h2>
+                            <button id="close-settings-panel" class="sidebar-close-btn">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="sidebar-panel-content">
+                            <div class="settings-section">
+                                <h3 class="section-title">Settings</h3>
+                                <div id="settings-content"> 
+                                 <!-- settings will go here -->
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <h3 class="section-title">Map Statistics</h3>
+                                <div id="stats-content"> 
+                                 <!-- stats will go here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Route Planner Panel -->
+                    <div id="sidebar-route-planner-panel" class="sidebar-panel collapsed">
+                        <div class="sidebar-panel-header">
+                            <h2>Route Planner</h2>
+                            <div class="sidebar-panel-header-actions">
+                                <button id="clear-current-route-btn" class="gm-btn-icon" title="Clear Current Route">
+                                    <i class="fas fa-map"></i>
+                                    <span>Clear Current Route</span>
+                                </button>
+                                <button id="close-route-planner-panel" class="sidebar-close-btn">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="sidebar-panel-content">
+                            <input type="text" id="route-name-input" placeholder="Enter route name..." class="route-name-input" style="margin-bottom: 15px;">
+                            <div class="route-planner-controls">
+                                <button id="add-waypoint-btn" class="gm-btn">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add Waypoint</span>
+                                </button>
+                                <button id="calculate-route-btn-modal" class="gm-btn">
+                                    <i class="fas fa-route"></i>
+                                    <span>Calculate Route</span>
+                                </button>
+                                <button id="save-route-btn" class="gm-btn">
+                                    <i class="fas fa-save"></i>
+                                    <span>Save Route</span>
+                                </button>
+                                <button id="open-saved-route-btn" class="gm-btn">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span>Open Saved Route</span>
+                                </button>
+                            </div>
+                            <div id="saved-routes-list" class="saved-routes-list collapsed">
+                                <div class="saved-routes-header">
+                                    <h4 style="margin: 0; color: white;">Saved Routes</h4>
+                                    <button id="close-saved-routes-btn" class="close-btn-small">×</button>
+                                </div>
+                                <div id="saved-routes-content" class="saved-routes-content"></div>
+                            </div>
+                            <div id="waypoints-list" class="waypoints-list">
+                                <div class="waypoint-item-header">
+                                    <span>Waypoint</span>
+                                    <span>Location</span>
+                                    <span>Actions</span>
+                                </div>
+                            </div>
+                            <div id="route-status-modal" class="route-status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Map Container -->
+            <div id="map"> 
+                <!-- map will go here -->
+            </div>
+        <script src="assets/js/sm_overview_map.js"></script>
+        <script>
+            // Set up promise for data restoration if needed
+            if(!window.__dataRestorePromise) {
+                window.__dataRestorePromise = {
+                    resolved: false,
+                    resolve: function() {
+                        this.resolved = true;
+                        if(this.callback) this.callback();
+                    },
+                    then: function(callback) {
+                        if(this.resolved) {
+                            callback();
+                        } else {
+                            this.callback = callback;
+                        }
+                    }
+                };
+                window.__waitForDataRestore = new Promise(function(resolve) {
+                    window.__dataRestorePromise.resolve = resolve;
+                    if(window.__dataRestorePromise.resolved) {
+                        resolve();
+                    }
+                });
+            }
+            
+            // Wait for user data restoration before initializing
+            if(window.__waitForDataRestore) {
+                window.__waitForDataRestore.then(function() {
+                    SMOverviewMap.init();
+                });
+            } else {
+                // If no restoration needed, init immediately
+                SMOverviewMap.init();
+            }
+        </script>
+    </body>
+</html>

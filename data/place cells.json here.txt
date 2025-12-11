@@ -1,0 +1,2 @@
+Place your cells.json file in this folder.
+The cells.json file is required for the map to function properly.

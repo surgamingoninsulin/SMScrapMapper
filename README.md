@@ -1,77 +1,209 @@
 <div align="center">
 <h1><a href="https://surgamingoninsulin.github.io/SMScrapMapper/">WEBSITE</a></h1>
 </div>
+<br>
+# Scrap Mechanic Map
 
-# Scrap Mechanic Map - Overview
-
-An interactive map viewer and route planner for Scrap Mechanic, featuring a Google Maps-style route planning system with waypoint management, pathfinding algorithms, and comprehensive settings.
+A desktop application for viewing and navigating the Scrap Mechanic game map with route planning capabilities.
 
 ## Features
 
-### ✅ Route Planner
-- **Google Maps-style Interface**: Full-screen overlay with modern UI
-- **Multi-waypoint Routes**: Create routes with unlimited waypoints
-- **Drag-and-Drop Waypoints**: Reposition waypoints by dragging
-- **Smart Pathfinding**: A* algorithm with water avoidance and road preference
-- **Route Management**: Save, load, and delete routes (persisted in browser)
-- **Visual Customization**: Customize route colors, width, opacity, and glow effects
+- **Interactive Map View**: Explore the Scrap Mechanic world map with zoom and pan controls
+- **Route Planning**: Create custom routes with waypoints
+- **Saved Routes**: Save and manage multiple routes
+- **Last Route**: Quickly restore your last calculated route
+- **POI Markers**: View points of interest on the map
+- **Persistent Data**: Your routes and settings are automatically saved
 
-### ✅ Settings System
-- **Unified Settings Modal**: Access all settings via cog icon (top-right)
-- **Map Options**: Default zoom, center, grid, borders, coordinate display
-- **Marker Options**: Size, opacity, labels
-- **Route Options**: Color, width, opacity, glow, snap settings
-- **UI Customization**: Panel position, width, auto-collapse
-- **Data Management**: Export/import settings, reset to defaults
+## Requirements
 
-### ✅ Marker System
-- **Consistent Design**: All markers use route planner waypoint pin style (blue circles)
-- **Quick Waypoint Creation**: Click map → "Add to Route Planner" button
-- **Seamless Integration**: Waypoints added without opening route planner window
+- **Python 3.7+** (for development)
+- **Windows 10+** (for the compiled EXE)
+- **cells.json** file (must be placed in the `data` folder next to the EXE)
 
-## Quick Start
+## Installation
 
-1. **Open Route Planner**: Click the 🗺️ Route Planner button at the top center
-2. **Add Waypoints**: Click "Add Waypoint" then click on the map to add waypoints
-3. **Calculate Route**: Click "Calculate Route" to see the path
-4. **Save Route**: Enter a route name and click "Save Route"
-5. **Load Route**: Click "Open Saved Route" to view and load saved routes
+### Option 1: Using the Pre-built EXE
 
-## Pathfinding
+1. Download `SMScrapMapper.exe` from the `dist` folder
+2. Place your `cells.json` file in a `data` folder next to the EXE:
+   ```
+   SMScrapMapper.exe
+   data/
+     └── cells.json
+   ```
+3. Run `SMScrapMapper.exe`
 
-The route planner uses intelligent pathfinding:
-- **Water Avoidance**: Routes never go through water tiles
-- **Road Preference**: Routes prefer road tiles when available
-- **Shortest Path**: Always calculates the most efficient route
-- **A* Algorithm**: Efficient pathfinding with optimal results
+The application will automatically create the `data` folder and a README file if it doesn't exist.
 
-## Settings
+### Option 2: Running from Source
 
-Access settings via the ⚙️ cog icon in the top-right corner:
-- **Map Display**: Customize zoom, center, grid, borders
-- **Markers**: Adjust size, opacity, labels
-- **Routes**: Customize colors, width, opacity, glow
-- **UI**: Panel position, width, auto-collapse
+1. Clone or download this repository
+2. Run `setup.bat` (Windows) - this will:
+   - Create a virtual environment
+   - Install required dependencies
+   - Run the application
 
-## Technical Details
+Or manually:
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python Main.py
+```
 
-- **Storage**: Routes and settings saved in browser localStorage with robust error handling
-- **Format**: JSON (routes and settings)
-- **Pathfinding**: A* algorithm with water avoidance and road preference
-- **Framework**: Leaflet.js for map rendering
-- **Styling**: Modern CSS with gradients, animations, and backdrop blur
-- **Responsive Design**: Optimized modal widths (85% width, max 1000px) for better UX
-- **GitHub Pages Compatible**: Enhanced localStorage error handling for reliable saving on GitHub Pages
+## Building the EXE
 
-## Browser Compatibility
+To build a standalone executable:
 
-- Modern browsers with localStorage support
-- Recommended: Chrome, Firefox, Edge (latest versions)
+1. Ensure you have PyInstaller installed:
+   ```bash
+   pip install pyinstaller
+   ```
+
+2. Run the build script:
+   ```bash
+   build_one_line.bat
+   ```
+
+   Or for debugging (with console output):
+   ```bash
+   build_debug.bat
+   ```
+
+3. The EXE will be created in `dist\SMScrapMapper.exe`
+
+### Build Configuration
+
+The build process:
+- Bundles all static files (HTML, CSS, JS, images) into the EXE
+- Creates a single-file executable (`--onefile`)
+- Hides the console window (`--noconsole`)
+- Includes the application icon
+- Excludes unnecessary modules to reduce size
+
+**Important**: The `cells.json` file is **NOT** included in the EXE. You must place it in the `data` folder next to the EXE manually.
+
+## File Structure
+
+```
+scrapmechanic map/
+├── Main.py                 # Main application entry point
+├── requirements.txt        # Python dependencies
+├── setup.bat              # Setup and run script
+├── build_one_line.bat     # Build EXE script
+├── build_debug.bat        # Build EXE with console (debug)
+├── static/                # Web assets (bundled into EXE)
+│   ├── index.html
+│   └── assets/
+│       ├── js/
+│       ├── img/
+│       └── style.css
+├── data/                  # User data folder (created automatically)
+│   ├── cells.json         # Map data (user must provide)
+│   ├── user_data.json     # Saved routes/settings (auto-generated)
+│   └── !_README_!.txt     # Instructions (auto-generated)
+└── dist/                  # Build output
+    └── SMScrapMapper.exe
+```
+
+## Usage
+
+### First Launch
+
+1. Place your `cells.json` file in the `data` folder next to the EXE
+2. Launch `SMScrapMapper.exe`
+3. If `cells.json` is missing, you'll see an alert - the app will still run but may not function correctly
+
+### Creating Routes
+
+1. Click on the map to add waypoints
+2. Enter a route name in the input field
+3. Click "Calculate Route" to generate the path
+4. Routes are automatically saved
+
+### Managing Routes
+
+- **New Route**: Start creating a new route
+- **Saved Routes**: View and load previously saved routes
+- **Last Route**: Restore your most recently calculated route
+- **Clear Current Route**: Remove waypoints from the current route
+
+### Settings
+
+Access settings via the map controls panel to customize:
+- Map display options
+- Route preferences
+- Other application settings
+
+## Data Files
+
+### cells.json
+
+- **Location**: `data/cells.json` (next to the EXE)
+- **Purpose**: Contains map cell data for the Scrap Mechanic world
+- **Required**: Yes (application will show an alert if missing)
+- **Source**: You must obtain this file separately
+
+### user_data.json
+
+- **Location**: `data/user_data.json` (next to the EXE)
+- **Purpose**: Stores your saved routes and settings
+- **Required**: No (auto-generated when you save data)
+- **Auto-created**: Yes, when you create routes or change settings
+
+## Troubleshooting
+
+### "cells.json not found" Alert
+
+- Ensure `cells.json` is in the `data` folder next to the EXE
+- Check that the file is named exactly `cells.json` (case-sensitive)
+- Verify the file is valid JSON
+
+### Application Won't Start
+
+- Check that all dependencies are installed (run `setup.bat`)
+- Ensure you have Python 3.7+ installed
+- Try running with `build_debug.bat` to see error messages
+
+### Routes Not Saving
+
+- Check that the `data` folder exists next to the EXE
+- Verify write permissions in the EXE directory
+- Check console output for error messages (if running from source)
+
+### EXE Build Fails
+
+- Ensure PyInstaller is installed: `pip install pyinstaller`
+- Activate your virtual environment before building
+- Check that all required modules are installed
+- Review the build output for specific error messages
+
+## Development
+
+### Running in Development Mode
+
+```bash
+python Main.py
+```
+
+This will run the application with debug output and console window.
+
+### Dependencies
+
+- `pywebview==5.0.0` - Desktop webview wrapper
+
+### Project Structure
+
+- `Main.py`: Handles file paths, loads data, manages webview window
+- `static/`: Web application files (HTML, CSS, JavaScript)
+- `static/assets/js/sm_overview_map.js`: Main map logic and route planning
 
 ## License
 
-See LICENSE file for details.
+[Add your license information here]
 
----
+## Credits
 
-For detailed implementation information, see [plan.md](plan.md).
+Built for Scrap Mechanic map navigation and route planning.
+

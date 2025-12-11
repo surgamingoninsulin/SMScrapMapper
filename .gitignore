@@ -1,1 +1,38 @@
-node_modules
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+
+# PyInstaller
+*.spec
+build/
+dist/
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Application specific
+data/cells.json
+data/user_data.json
+.bat
+*.log
+.txt
+
+# .MD files
+QUICK_START.md
+build_exe_instructions.md
