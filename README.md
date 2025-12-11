@@ -1,5 +1,5 @@
 <div align="center">
-<p><img src="./static/assets/imgfavicon.png" width="150" height="auto" alt"logo"></p>
+<p><img src="./static/assets/img/favicon.png" width="150" height="auto" alt"logo"></p>
 <h1><a href="https://surgamingoninsulin.github.io/preview_SMScrapMapper/">DEMO</a></h1>
 </div>
 <br>
